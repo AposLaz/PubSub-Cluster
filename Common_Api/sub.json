@@ -1,0 +1,12 @@
+{
+  "id": "urn:subscription:1",
+  "type": "Subscription",
+  "entities": [{"type": "Building","id": "urn:ngsi-ld:Building:store001"}],
+  "notification": {
+    "endpoint": {
+      "uri": "http://ptsv2.com/t/g5tt2-1607262598/post",
+      "accept": "application/json"
+    }
+  },
+   "@context": ["https://pastebin.com/raw/Mgxv2ykn"]
+}

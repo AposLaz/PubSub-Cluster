@@ -1,0 +1,69 @@
+1) VM-2
+
+>> docker-compose up
+
+---------- POST ENTITY
+
+curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
+--header 'Content-Type: application/ld+json' \
+--header 'Cookie: redirect_to=%2Fservice_discovery%2Fscorpio%2Fhouse2%3Asmartrooms%3Aroom1%2Fattrs' \
+--data-raw '{
+  "id": "house2:smartrooms:room1",
+  "type": "Room",
+  "temperature": {
+        "value": 23,
+        "unitCode": "CEL",
+        "type": "Property",
+        "providedBy": {
+                "type": "Relationship",
+                "object": "smartbuilding:house2:sensor0815"
+         }
+   },
+  "isPartOf": {
+        "type": "Relationship",
+        "object": "smartcity:houses:house2"
+  },
+  "@context": [{"Room": "urn:mytypes:room", "temperature": "myuniqueuri:temperature", "isPartOf": "myuniqueuri:isPartOf"},"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"]
+}'
+
+    "isPartOf111111111111111111111111112334223eerrr4ertty23333333333hrtjgrtkjghtrkjghtrkjghrtkjghrtjkhgtrkjghrtkjghrtjkghrtjkghrtjkghrtjkghrtkjghrtkjghrtkjghrtkgjhrktjghrtkjghrtertertertertererterterkjghtrjkghrtjkghrtjkghrtjkghrtkjghrtkjghrtjkghrtjkghrtkjghrtkjgh333333333333333333333333333333453245345353478888888888888888324857378245783458734725347ferufgerjhergwergwfuyfwegyuerwgfyeurwgffffffffffffewrgfyuegrwfyugewryufegrwyfguwggggggggggggggggggggggggewuyrgferyuwgfeuywrgfewygferyuwgfewryugwyuergfweuygfweyurgfewyurfgeyuwgfyuewgf": {
+          "type": "Relationship",
+          "object": "smartcity:houses:house2"
+    }
+
+---------- TRY GET ENTITY
+
+curl --location --request GET 'http://localhost:3001/service_discovery/scorpio/house2:smartrooms:room1' \
+--header 'Accept: application/ld+json' \
+--header 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
+--header 'Cookie: redirect_to=%2Fservice_discovery%2Fscorpio%2Fhouse2%3Asmartrooms%3Aroom1'
+
+
+--------- POST SUBSCRIPTION
+
+curl --location --request POST 'http://localhost:9090/ngsi-ld/v1/subscriptions/' \
+--header 'Content-Type: application/ld+json' \
+--header 'Cookie: redirect_to=%2Fservice_discovery%2Fscorpio%2Fhouse2%3Asmartrooms%3Aroom1%2Fattrs' \
+--data-raw '{
+  "id": "urn:subscription:1",
+  "type": "Subscription",
+  "entities": [{
+                "type": "Room"
+  }],
+  "notification": {
+        "endpoint": {
+                "uri": "http://subscriber-orion:3030/app",
+                "accept": "application/json"
+        }
+  },
+  "@context": ["https://pastebin.com/raw/Mgxv2ykn"]
+}'
+
+
+---------- GET SUBSCRIPTION
+
+curl --location --request GET 'http://localhost:9090/ngsi-ld/v1/subscriptions/' \
+--header 'Cookie: redirect_to=%2Fservice_discovery%2Fscorpio%2Fhouse2%3Asmartrooms%3Aroom1'
+
+
+

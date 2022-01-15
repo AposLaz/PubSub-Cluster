@@ -1,0 +1,75 @@
+1) First run
+
+docker run -d \
+  --net="host" \
+  --pid="host" \
+  -v "/:/host:ro,rslave" \
+  quay.io/prometheus/node-exporter:latest \
+  --path.rootfs=/host
+
+
+2) Go in prometheus.yml and change ip with the local ip of machine
+
+example
+
+global:
+  scrape_interval: 15s 
+  external_labels:
+     monitor: 'node'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['local_ip:9090'] <------ HERE
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['local_ip:9100'] <------ HERE
+
+3) Go in grafana and monitor changes
+
+--------- CPU
+
+avg without (cpu) (irate(node_cpu_seconds_total{job="node-exporter",mode!="idle", instance="192.168.90.49:9100"}[1m]))
+
+Legend = {{mode}}
+
+Unit = Percent (0.0-1.0)
+
+--------- RAM
+
+Unit = bytes(IEC) 
+
+TOTAL_RAM_USAGE
+
+  node_memory_MemTotal_bytes{instance="192.168.90.49:9100",job="node-exporter"} - 
+  node_memory_MemFree_bytes{job="node-exporter",instance="192.168.90.49:9100"} - 
+  node_memory_Cached_bytes{job="node-exporter",instance="192.168.90.49:9100"} - 
+  node_memory_Buffers_bytes{instance="192.168.90.49:9100",job="node-exporter"}
+
+BUFFERS
+
+  node_memory_Buffers_bytes{instance="192.168.90.49:9100",job="node-exporter"}
+
+CACHED 
+
+  node_memory_Cached_bytes{job="node-exporter",instance="192.168.90.49:9100"}
+
+FREE
+
+  node_memory_MemFree_bytes{job="node-exporter",instance="192.168.90.49:9100"}
+
+--------- Network Traffic
+
+Units = kilobytes / sec
+
+irate(node_network_receive_bytes_total{job="node-exporter",instance="192.168.90.49:9100"}[5m])
+Legend = {{device}} received
+
+irate(node_network_transmit_bytes_total{job="node-exporter",instance="192.168.90.49:9100"}[5m])
+Legend = {{device}} transmit
+
+Errors Netwroks
+
+irate(node_network_receive_errs_total{job="node-exporter",instance="192.168.90.49:9100"})
+irate(node_network_transmit_errs_total{job="node-exporter",instance="192.168.90.49:9100"})

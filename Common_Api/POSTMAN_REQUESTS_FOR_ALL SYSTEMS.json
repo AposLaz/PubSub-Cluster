@@ -1,0 +1,1649 @@
+{
+	"info": {
+		"_postman_id": "74976d69-98ad-4dfe-a324-cccc3a7edaf6",
+		"name": "FINAL_REQUESTS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CRUD",
+			"item": [
+				{
+					"name": "GET_BY_ENTITY_ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/ld+json"
+							},
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/orion/urn:ngsi-ld:Building:store001",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/ld+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Building:store001\",\n    \"type\": \"Building\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n    \"location\": {\n        \"type\": \"GeoProperty\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"city\": {\n        \"type\": \"Property\",\n        \"value\": \"Chania\"\n    }\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/orion",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/urn:ngsi-ld:Building:store004",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_ATTR",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": {\n         \"type\": \"Property\",\n         \"value\": \"xxxxx\"\n    }\n}"
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/orion/urn:ngsi-ld:Building:store001/attrs/",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store001",
+								"attrs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH_ATTRS",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": {\n         \"type\": \"Property\",\n         \"value\": \"Mursina\"\n    }\n}"
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/orion/urn:ngsi-ld:Building:store001/attrs/",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store001",
+								"attrs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH_ATTRS_ID",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"Paliouria\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/orion/urn:ngsi-ld:Building:store001/attrs/city",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store001",
+								"attrs",
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_ATTR",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/?id=urn:ngsi-ld:Building:store001&attrs=city",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "urn:ngsi-ld:Building:store001"
+								},
+								{
+									"key": "attrs",
+									"value": "city"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_entity_filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/?type=https://uri.fiware.org/ns/data-models%23Building&options=keyValues",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "https://uri.fiware.org/ns/data-models%23Building"
+								},
+								{
+									"key": "options",
+									"value": "keyValues"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD_STELLIO",
+			"item": [
+				{
+					"name": "GET_BY_ENTITY_ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/stellio/urn:ngsi-ld:Building:store001",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"stellio",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Tsooo\",\n    \"type\": \"Tsooo\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": \"Bornholmer Straße 65\",\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n     \"xddddd\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n     \"oook\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/stellio",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"stellio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_ATTR",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": {\n         \"type\": \"Property\",\n         \"value\": \"Grevena\"\n    }\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/stellio/urn:ngsi-ld:Building:store001/attrs/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"stellio",
+								"urn:ngsi-ld:Building:store001",
+								"attrs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH_ATTRS",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": {\n         \"type\": \"Property\",\n         \"value\": \"Mursina\"\n    }\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/stellio/urn:ngsi-ld:Tsooo/attrs/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"stellio",
+								"urn:ngsi-ld:Tsooo",
+								"attrs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH_ATTRS_ID",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"Paliouria\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/stellio/urn:ngsi-ld:Building:store011/attrs/city",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"stellio",
+								"urn:ngsi-ld:Building:store011",
+								"attrs",
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_entity_filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/?type=https://uri.fiware.org/ns/data-models%23Building&options=keyValues",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "https://uri.fiware.org/ns/data-models%23Building"
+								},
+								{
+									"key": "options",
+									"value": "keyValues"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD_SCORPIO",
+			"item": [
+				{
+					"name": "GET_BY_ENTITY_ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/scorpio/urn:ngsi-ld:Building:store001",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Building:store001\",\n    \"type\": \"Building\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n    \"location\": {\n        \"type\": \"GeoProperty\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://35.234.129.208:3000/service_discovery/scorpio",
+							"protocol": "http",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/urn:ngsi-ld:Building:store004",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_ATTR",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city\": {\n         \"type\": \"Property\",\n         \"value\": \"Paliouria\"\n    }\n}"
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/scorpio/urn:ngsi-ld:Building:store001/attrs/",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"urn:ngsi-ld:Building:store001",
+								"attrs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH_ATTRS",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tweets\": {\n         \"type\": \"Property\",\n         \"value\": \"Mursina\"\n    }\n}"
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/scorpio/urn:ngsi-ld:Building:store001/attrs/",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"urn:ngsi-ld:Building:store001",
+								"attrs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH_ATTRS_ID",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"Paliouria\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/scorpio/urn:house2:smartrooms:room1/attrs/city",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"urn:house2:smartrooms:room1",
+								"attrs",
+								"city"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_ATTR",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/scorpio/?id=urn:house2:smartrooms:room1&attrs=city",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "urn:house2:smartrooms:room1"
+								},
+								{
+									"key": "attrs",
+									"value": "city"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_entity_filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/scorpio/?type=urn:mytypes:room&options=keyValues",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "urn:mytypes:room"
+								},
+								{
+									"key": "options",
+									"value": "keyValues"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SUB",
+			"item": [
+				{
+					"name": "POST_SUB",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"urn:subscription:11\",\n  \"type\": \"Subscription\",\n  \"entities\": [{\"type\": \"Building\",\"id\": \"urn:ngsi-ld:Building:store005\"}],\n  \"watchedAttributes\": [\"city\"],\n  \"notification\": {\n     \"format\": \"normalized\",\n    \"endpoint\": {\n      \"uri\": \"http://ptsv2.com/t/30xad-1596541146/post\",\n      \"accept\": \"application/ld+json\"\n    }\n  },\n   \"@context\": [\"https://pastebin.com/raw/Mgxv2ykn\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/orion/subscription/",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"subscription",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_SUB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://35.234.129.208:3000/subscription/orion",
+							"protocol": "http",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"subscription",
+								"orion"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SUB_STELLIO",
+			"item": [
+				{
+					"name": "POST_SUB",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"urn:ngsi-ld:subscription:1001\",\n  \"type\": \"Subscription\",\n  \"entities\": [{\"type\": \"Building\",\"id\": \"urn:ngsi-ld:Building:store002\"}],\n  \"notification\": {\n    \"endpoint\": {\n      \"uri\": \"http://ptsv2.com/t/g5tt2-1607262598/post\",\n      \"accept\": \"application/json\"\n    }\n  },\n   \"@context\": [\"https://pastebin.com/raw/Mgxv2ykn\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/stellio/subscription/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"stellio",
+								"subscription",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_SUB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://35.234.129.208:3000/subscription/stellio",
+							"protocol": "http",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"subscription",
+								"stellio"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SUB_SCORPIO",
+			"item": [
+				{
+					"name": "POST_SUB",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"urn:subscription:1\",\n  \"type\": \"Subscription\",\n  \"entities\": [{\"type\": \"Room\",\"id\": \"urn:house2:smartrooms:room1\"}],\n  \"notification\": {\n    \"endpoint\": {\n      \"uri\": \"http://ptsv2.com/t/g5tt2-1607262598/post\",\n      \"accept\": \"application/json\"\n    }\n  },\n   \"@context\": [\"https://pastebin.com/raw/Mgxv2ykn\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/scorpio/subscription/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"subscription",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_SUB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://35.234.129.208:3000/subscription/scorpio",
+							"protocol": "http",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"subscription",
+								"scorpio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST_NEW_SUB",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"urn:subscription:2\",\r\n  \"type\": \"Subscription\",\r\n  \"watchedAttributes\": [\"temperature\"],\r\n        \"notification\": {\r\n                \"endpoint\": {\r\n                        \"uri\": \"http://ptsv2.com/t/g5tt2-1607262598/post\",\r\n                        \"accept\": \"application/json\"\r\n                }\r\n        },\r\n  \"@context\": \"https://pastebin.com/raw/Mgxv2ykn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/scorpio/subscription/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"subscription",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rabbit",
+			"item": [
+				{
+					"name": "POST ENTITY",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Building:store001\",\n    \"type\": \"Building\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n    \"location\": {\n        \"type\": \"GeoProperty\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/rabbit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"rabbit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/rabbit/urn:ngsi-ld:Building:store001",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"rabbit",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET QUERY",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/service_discovery/rabbit?id=urn:My:Body",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"rabbit"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "urn:My:Body"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Registrations_Orion",
+			"item": [
+				{
+					"name": "POST_REG",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"ContextSourceRegistration\",\n    \"information\": [\n        {\n            \"entities\": [\n                {\n                    \"type\": \"Building\",\n                    \"id\": \"urn:ngsi-ld:Building:store001\"\n                }\n            ],\n            \"properties\": [\n                \"tweets\"\n            ]\n        }\n    ],\n    \"endpoint\": \"http://context-provider:3005/static/tweets\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/csourceRegistrations/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"csourceRegistrations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_ALL_REG",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/csourceRegistrations/orion/?type=Building",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"csourceRegistrations",
+								"orion",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Building"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_REG",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Link",
+								"value": "<https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/orion/urn:ngsi-ld:Building:store001",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"orion",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MISSING PATCH REG",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Link",
+								"value": "<https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"Property\",\n  \"value\": [\n    \"This must be Thursday\",\n    \"I never could get the hang of Thursdays.\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Building:store002/attrs/tweets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1026",
+							"path": [
+								"ngsi-ld",
+								"v1",
+								"entities",
+								"urn:ngsi-ld:Building:store002",
+								"attrs",
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Registrations_Scorpio",
+			"item": [
+				{
+					"name": "POST_REG",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:ContextSourceRegistration:csr1a3458\",\n    \"type\": \"ContextSourceRegistration\",\n    \"information\": [\n        {\n            \"entities\": [\n                {\n                    \"type\": \"Building\"\n                }\n            ],\n            \"properties\": [\n                \"tweets\"\n            ]\n        }\n    ],\n    \"endpoint\": \"http://context-provider:3006/static/tweets\",\n    \"location\": { \"type\": \"Point\", \"coordinates\": [13.3986, 52.5547] },\n    \"@context\": \"https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/scorpio/csourceRegistrations/",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"csourceRegistrations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_ALL_REG",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Link",
+								"value": "<https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://35.234.129.208:3000/csourceRegistrations/scorpio/?type=Building",
+							"protocol": "http",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"csourceRegistrations",
+								"scorpio",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Building"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_REG",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Link",
+								"value": "<https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "35.234.129.208:3000/service_discovery/scorpio/urn:ngsi-ld:Building:store001",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"scorpio",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MISSING PATCH REG",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Link",
+								"value": "<https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"Property\",\n  \"value\": [\n    \"This must be Thursday\",\n    \"I never could get the hang of Thursdays.\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://34.89.175.39:9090/ngsi-ld/v1/entities/urn:ngsi-ld:Building:store002/attrs/tweets",
+							"protocol": "http",
+							"host": [
+								"34",
+								"89",
+								"175",
+								"39"
+							],
+							"port": "9090",
+							"path": [
+								"ngsi-ld",
+								"v1",
+								"entities",
+								"urn:ngsi-ld:Building:store002",
+								"attrs",
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FAYE",
+			"item": [
+				{
+					"name": "POST",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n    {\n        \"id\": \"urn:ngsi-ld:Building:store001\",\n        \"type\": \"Building\",\n        \"category\": {\n            \"type\": \"Property\",\n            \"value\": [\n                \"commercial\"\n            ]\n        },\n        \"address\": {\n            \"type\": \"Property\",\n            \"value\": {\n                \"streetAddress\": \"Bornholmer Straße 65\",\n                \"addressRegion\": \"Berlin\",\n                \"addressLocality\": \"Prenzlauer Berg\",\n                \"postalCode\": \"10439\"\n            },\n            \"verified\": {\n                \"type\": \"Property\",\n                \"value\": true\n            }\n        },\n        \"location\": {\n            \"type\": \"GeoProperty\",\n            \"value\": {\n                \"type\": \"Point\",\n                \"coordinates\": [\n                    13.3986,\n                    52.5547\n                ]\n            }\n        },\n        \"name\": {\n            \"type\": \"Property\",\n            \"value\": \"Bösebrücke Einkauf\"\n        },\n        \"@context\": [\n            \"https://fiware.github.io/data-models/context.jsonld\",\n            \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n        ]\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/service_discovery/faye",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"faye"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:3000/service_discovery/faye/urn:ngsi-ld:Building:store001",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"faye",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUSHPIN",
+			"item": [
+				{
+					"name": "Pushpin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Building:store0e01\",\n    \"type\": \"Building\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n    \"location\": {\n        \"type\": \"GeoProperty\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/service_discovery/pushpin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"pushpin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/service_discovery/pushpin/urn:ngsi-ld:Building:store001",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"pushpin",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post push",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Building:store001\",\n    \"type\": \"Building\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n    \"location\": {\n        \"type\": \"GeoProperty\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://35.234.129.208:3030/publish",
+							"protocol": "http",
+							"host": [
+								"35",
+								"234",
+								"129",
+								"208"
+							],
+							"port": "3030",
+							"path": [
+								"publish"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "KAFKA",
+			"item": [
+				{
+					"name": "POST_Entity Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/ld+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"urn:ngsi-ld:Building:store001\",\n    \"type\": \"Building\",\n    \"category\": {\n        \"type\": \"Property\",\n        \"value\": [\"commercial\"]\n    },\n    \"address\": {\n        \"type\": \"Property\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"verified\": {\n            \"type\": \"Property\",\n            \"value\": true\n        }\n    },\n    \"location\": {\n        \"type\": \"GeoProperty\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Property\",\n        \"value\": \"Bösebrücke Einkauf\"\n    },\n    \"@context\": [\n        \"https://fiware.github.io/data-models/context.jsonld\",\n        \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/service_discovery/kafka",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"kafka"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_BY_ENTITY_ID Copy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/ld+json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/service_discovery/kafka/urn:ngsi-ld:Building:store001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"service_discovery",
+								"kafka",
+								"urn:ngsi-ld:Building:store001"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

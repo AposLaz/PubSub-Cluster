@@ -1,0 +1,5 @@
+gcp 
+su - apps
+
+https://www.bswen.com/2019/08/others-Use-Apache-Bench(ab)-command-to-test-RESTful-apis-example.html
+https://stackoverflow.com/questions/48808672/response-time-vs-throughput-to-check-whether-need-upgrade-heroku

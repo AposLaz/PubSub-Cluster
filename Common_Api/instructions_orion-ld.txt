@@ -1,0 +1,109 @@
+1) VM-1
+    
+    Run main app
+
+>> docker-compose up
+
+2) VM-2
+
+>> cd Services/tutorials.LD-Subscriptions-Registrations
+
+>> ./services orion start
+
+>>----------------- GET ENTITY ( You must get entity )
+
+    curl --location --request GET 'http://localhost:3001/service_discovery/orion/urn:ngsi-ld:Shelf:unit001' \
+    --header 'Accept: application/ld+json' \
+    --header 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
+
+>>----------------- UPDATE ENTITY
+
+    curl --location --request POST 'http://localhost:3001/service_discovery/orion/urn:ngsi-ld:Shelf:unit001/attrs' \
+        --header 'Content-Type: application/json' \
+        --header 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
+        --data-raw '{
+            "location": {
+                "type": "GeoProperty",
+                "value": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.398611,
+                        52.554699
+                    ]
+                }
+            },
+            "maxCapacity": {
+                "type": "Property",
+                "value": 50
+            },
+            "name": {
+                "type": "Property",
+                "value": "Corner Unit"
+            },
+            "stocks": {
+                "type": "Relationship",
+                "object": "urn:ngsi-ld:Product:001"
+            },
+            "locatedIn": {
+                "type": "Relationship",
+                "object": "urn:ngsi-ld:Building:store001",
+                "requestedBy": {
+                    "type": "Relationship",
+                    "object": "urn:ngsi-ld:Person:bob-the-manager"
+                },
+                "installedBy": {
+                    "type": "Relationship",
+                    "object": "urn:ngsi-ld:Person:employee001"
+                },
+                "statusOfWork": {
+                    "type": "Property",
+                    "value": "completed"
+                }
+            },
+            "numberOfItems": {
+                "type": "Property",
+                "value": 8
+            },
+            "numberOfItems11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111": {
+                "type": "Property",
+                "value": 89
+            },
+            "qwwewwwwwwwwwwwwwwwwwwwwwwwwwedwedwedwpppdkddkkdkkdkdkdkdkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkedwe": {
+                "type": "Property",
+                "value": 89
+            }
+        }'
+
+------------- POST Subscriptions
+
+        curl --location --request POST 'http://localhost:1026/ngsi-ld/v1/subscriptions/' \
+        --header 'Content-Type: application/ld+json' \
+        --data-raw '{
+        "description": "Notify me of low stock in Store 001",
+        "type": "Subscription",
+        "entities": [{"type": "Shelf"}],
+        "watchedAttributes": ["numberOfItems"],
+        "q": "numberOfItems<10;locatedIn==urn:ngsi-ld:Building:store001",
+        "notification": {
+            "attributes": ["numberOfItems", "stocks", "locatedIn","name","maxCapacity"],
+            "format": "keyValues",
+            "endpoint": {
+            "uri": "http://subscriber-orion:3030/app",
+            "accept": "application/json"
+            }
+        },
+        "@context": "https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld"
+        }'
+
+----------- GET Subscriptions
+
+        curl --location --request GET 'http://localhost:1026/ngsi-ld/v1/subscriptions/'
+
+3) VM-3 (subscriber)
+
+>> cd Services
+>> docker-compose up  //this is subscriber
+
+4) Experiments send request 
+
+ab -s 180 -p post_orion.json -T application/json -H 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' -c 1 -n 1 http://localhost:3001/service_discovery/orion/urn:ngsi-ld:Shelf:unit001/attrs/

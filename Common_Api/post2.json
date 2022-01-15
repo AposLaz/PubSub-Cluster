@@ -1,0 +1,25 @@
+{
+    "id": "urn:ngsi-ld:Building:store001",
+    "type": "Building",
+    "category": {
+        "type": "Property",
+        "value": ["commercial"]
+    },
+    "address": {
+        "type": "Property",
+        "value": " Values are : streetAddress -> Bornholmer Straße 65, addressRegion -> Berlin, addressLocality -> Prenzlauer Berg, postalCode -> 10439, verified -> true "
+    },
+    "location": {
+        "type": "Property",
+        "value": "GREECE chania june 2021, coordinates [13, 5] "
+    },
+    "name": {
+        "type": "Property",
+        "value": "Bösebrücke Einkauf"
+    },
+    "@context": [
+        "https://fiware.github.io/data-models/context.jsonld",
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+    ]
+}
+

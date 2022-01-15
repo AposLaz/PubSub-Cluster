@@ -1,0 +1,262 @@
+First select and start a publish-subscribe system. You can run only a publish-subscribe system at time because many systems use same ports.
+If you press "docker-compose up" then you will run Apache Kafka and common_api which is the REST service. You send all messages in 
+REST service.
+Because Apache Kafka is in main docker-compose.yml, you have to stop it and its services if you want to start another pub-sub 
+(!!!!!!!!!! do not stop common_api container. This container run main REST API service).  
+
+|----/Common_Api
+        |
+        /Services
+            |
+            |   RUN ORION-LD
+            |----/Orion-LD
+                    |---- docker-compose.yml
+                                |
+                                |---- In Orion-LD there is a container for context Provider
+                                                            |
+                                                            |----follow instrunctions 
+                                                                    1) " https://fiware-tutorials.readthedocs.io/en/latest/context-providers/index.html " 
+                                                                    2) " https://github.com/FIWARE/tutorials.LD-Subscriptions-Registrations "
+                                                                    and give your API twitter Key for Provider
+            |
+            |   RUN SCORPIO
+            |----/Scorpio-conf
+                    |---- docker-compose.yml
+                                |
+                                |---- In Scorpio there is a container for context Provider  
+                                                            |                                                    
+                                                            |----follow instrunctions 
+                                                                    1) " https://fiware-tutorials.readthedocs.io/en/latest/context-providers/index.html " 
+                                                                    2) " https://github.com/FIWARE/tutorials.LD-Subscriptions-Registrations "
+                                                                    and give your API twitter Key for Provider
+                                |
+                                |---- In Scorpio we used confluent control center. Press http://localhost:9021/ and monitor Kafka in Scorpio.
+            |
+            |   RUN STELLIO
+            |----/Stellio
+                    |---- docker-compose.yml
+                                |
+                                |---- Stellio uses confluent control center. Press http://localhost:9021/ and monitor Kafka in Stellio.
+        |
+        |   RUN APACHE KAFKA
+        |---- docker-compose up
+                    |
+                    |
+                    |----Write in terminal the instrunctions
+                            |
+                            1) First coordinate MongoDB:
+
+                                docker-compose exec mongo1 /usr/bin/mongo --eval '''if (rs.status()["ok"] == 0) {
+                                    rsconf = {
+                                        _id : "rs0",
+                                        members: [
+                                            { _id : 0, host : "mongo1:27017", priority: 1.0 },
+                                            { _id : 1, host : "mongo2:27017", priority: 0.5 },
+                                            { _id : 2, host : "mongo3:27017", priority: 0.5 }
+                                        ]
+                                    };
+                                    rs.initiate(rsconf);
+                                }
+                                rs.conf();'''
+
+                            2) AFTER RUN SOURCE CONNECTOR FOR MONGO_DB
+
+                                curl -X POST -H "Content-Type: application/json" --data '
+                                {
+                                    "name": "mongo-source",
+                                    "config": {
+                                        "tasks.max":"1",
+                                        "connector.class":"com.mongodb.kafka.connect.MongoSourceConnector",
+                                        "connection.uri":"mongodb://mongo1:27017,mongo2:27017,mongo3:27017",
+                                        "topic.prefix":"receive",
+                                        "database":"kafka",
+                                        "collection":"entities",
+                                        "output.format.value":"json"
+                                }}' http://localhost:8083/connectors -w "\n"
+
+                            3) FINAL RUN SINK CONNECTOR FOR MONGO_DB
+
+                                curl -X POST -H "Content-Type: application/json" --data '
+                                {
+                                    "name": "mongo-sink",
+                                    "config": {
+                                        "connector.class":"com.mongodb.kafka.connect.MongoSinkConnector",
+                                        "tasks.max":"1",
+                                        "topics":"send",
+                                        "connection.uri":"mongodb://mongo1:27017,mongo2:27017,mongo3:27017",
+                                        "database":"kafka",
+                                        "collection":"entities",
+                                        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+                                        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+                                        "value.converter.schemas.enable": "false",
+                                        "transforms": "RenameField",
+                                        "transforms.RenameField.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+                                        "transforms.RenameField.renames": "_id:id",
+                                        "post.processor.chain":"com.mongodb.kafka.connect.sink.processor.BlockListValueProjector",
+                                        "value.projection.type":"BlockList",
+                                        "value.projection.list":"_id"
+                                    }
+                                }' http://localhost:8083/connectors -w "\n"
+        |
+        |   RUN RabbitMQ
+        |---- /rabbitMQ
+                    |----docker-compose up
+                                |
+                                |
+                                |---- Control Center = http://localhost:5672
+        |
+        |   RUN Faye
+        |---- /faye
+                    |----docker-compose up
+        |
+        |   RUN pushpin
+        |---- /pushpin
+                    |----docker-compose up
+                                |
+                                |
+                                |---- 1) docker exec -it pushpin bash
+                                      2) cd etc/pushpin/routes
+                                      3) cat > routes
+                                      4) * server:3030
+                                      5) cat routes (You must see " * server:3030 ")
+
+
+!!!!!!!!!___ if there is error in any time restart " common_api " container from /Common_Api/docker-compose.yml
+
+
+
+------------------------------------------------------------------------------------
+----------------------------------  API example ------------------------------------
+------------------------------------------------------------------------------------
+
+    - POSTMAN_REQUESTS_FOR_ALL SYSTEMS.json -> EXAMPLE OF REQUESTS CHECK IT
+
+    - {service_id} = kafka, orion, scorpio, stellio, rabbit, pushpin, faye
+
+API for all systems (POST-GET entity)
+
+- POST entity -> http://localhost:3000/service_discovery/{service_id}
+
+    {
+        "id": "urn:ngsi-ld:Building:store001",
+        "type": "Building",
+        "category": {
+            "type": "Property",
+            "value": ["commercial"]
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "Bornholmer Straße 65",
+                "addressRegion": "Berlin",
+                "addressLocality": "Prenzlauer Berg",
+                "postalCode": "10439"
+            },
+            "verified": {
+                "type": "Property",
+                "value": true
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [13.3986, 52.5547]
+            }
+        },
+        "name": {
+            "type": "Property",
+            "value": "Bösebrücke Einkauf"
+        },
+        "@context": [
+            "https://fiware.github.io/data-models/context.jsonld",
+            "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+        ]
+    }
+
+- GET entity -> http://localhost:3000/service_discovery/{service_id}/urn:ngsi-ld:Building:store001
+             -> http://localhost:3000/service_discovery/{service_id}/{entity_id}
+
+
+API SCORPIO, ORION-LD, STELLIO -> {service_id} = scorpio, orion, stellio 
+
+- POST SUBSCRIPTION -> http://localhost:3000/service_discovery/{service_id}/subscription/
+
+    {
+        "id": "urn:subscription:1",
+        "type": "Subscription",
+        "entities": [{"type": "Building","id": "urn:ngsi-ld:Building:store005"}],
+        "watchedAttributes": ["city"],
+        "notification": {
+            "format": "normalized",
+            "endpoint": {
+            "uri": "http://ptsv2.com/t/30xad-1596541146/post",
+            "accept": "application/ld+json"
+            }
+        },
+        "@context": ["https://pastebin.com/raw/Mgxv2ykn"]
+    }
+
+- GET SUBSCRIPTION -> http://localhost:3000/subscription/{service_id}
+
+- POST REGISTRATION -> http://localhost:3000/service_discovery/{service_id}/csourceRegistrations/ -> {service_id} = scorpio, orion
+
+- GET REGISTRATION -> http://localhost:3000/csourceRegistrations/scorpio/?type=Building 
+
+- GET ENTITY -> http://localhost:3000/service_discovery/{service_id}/{entity_id}
+
+
+---------------------------------------------------------------
+------------------------ APACHE BENCH -------------------------
+---------------------------------------------------------------
+
+RUN ALL TESTS MANY TIMES (5-6) FOR VALID RESULTS
+
+POST entity (ALL SYSTEMS EXCEPT STELLIO)
+
+ab -s 180 -p post.json -T application/ld+json -c 200 -n 1000 http://localhost:3000/service_discovery/{service_id}
+
+POST entity (STELLIO) //post2.json = 560 bytes = post.json
+
+ab -s 180 -p post2.json -T application/ld+json -c 200 -n 1000 http://localhost:3000/service_discovery/{service_id}
+
+GET entity (ALL SYSTEMS)
+
+ab -c 200 -n 1000 http://localhost:3000/service_discovery/{service_id}/urn:ngsi-ld:Building:store001
+
+POST SUBSCRIPTION ( orion-ld, scorpio, stellio )
+
+ab -s 180 -p sub.json -T application/json -c 200 -n 1000 http://localhost:3000/service_discovery/{service_id}/subscription/
+
+GET SUBSCRIPTION  ( orion-ld, scorpio, stellio )
+
+ab -s 180 -c 200 -n 1000  http://localhost:3000/subscription/{service_id}
+
+
+BEFORE UPDATE RUN for ORION-LD, SCORPIO and STELLIO following command
+
+curl --location --request POST 'localhost:3000/service_discovery/orion/urn:ngsi-ld:Building:store001/attrs/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "city": {
+         "type": "Property",
+         "value": "Heraclion"
+    }
+}'
+
+PATCH ENTITY ( orion-ld, scorpio, stellio )
+
+ab -s 180 -p post-orion.json -T application/json -c 1 -n 1 http://localhost:3000/service_discovery/orion/urn:ngsi-ld:Shelf:unit001/attrs/
+
+POST REGISTRATION ( orion-ld, scorpio )
+
+ab -s 180 -p reg.json -T application/json -c 200 -n 1000 http://localhost:3000/service_discovery/{service_id}/csourceRegistrations/
+
+GET REGISTRATION  ( orion-ld, scorpio )
+
+ab -c 200 -n 1000 http://localhost:3000/csourceRegistrations/{service_id}/?type=Building
+
+GET ENTITY AFTER REGISTRATION
+
+ab -s 240 -c 200 -n 1000 -H "Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"" -T 'application/json' http://localhost:3000/service_discovery/{service_id}/urn:ngsi-ld:Building:store001
+

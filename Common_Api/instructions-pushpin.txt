@@ -1,0 +1,54 @@
+1) VM-1
+    start main API, /Common_Api/
+
+ >> docker-compose up
+
+2) For Every VM
+ 
+ set up and start node-exporter ( go -> instructions_for_node-exporter...txt) You must complete steps 1) and 2) 
+
+3) VM-2
+
+ /Common_Api/pushpin
+
+ >> docker-compose up
+
+4) VM-3 
+    /Common_Api/pushpin
+
+ >> docker-compose -f docker-fetch-data.yml up
+
+ Pushpin should run succesfully
+
+4) Test pushpin sending a request
+ 
+ >>    curl --location --request POST 'http://localhost:3001/service_discovery/pushpin' \
+        --header 'Content-Type: application/ld+json' \
+        --data-raw '{
+            "id": "urn:ngsi-ld:Building:store0e01",
+            "type": "Building",
+            "category": {
+                "type": "Property",
+                "value": ["commercial"]
+            }
+        }'
+
+ >> In VM-3 and fetch-node container "/Common_Api/pushpin" you must see
+       
+       fetch-node | 1     or    fetch-node | 2 ....
+
+       (fetch-node | 0 is default) 
+
+5) Set up Grafana in 3 VMs
+
+    go in instructions_for_node-exporter....txt and complete step 3
+
+6) start experiments /Common_Api
+  
+    hey -s 180 -p post.json -T application/ld+json -c 200 -n 1000 http://localhost:3001/service_discovery/pushpin
+
+
+
+
+
+

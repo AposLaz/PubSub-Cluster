@@ -1,0 +1,62 @@
+version: "3.8"
+# Uncomment all
+services: 
+
+    subscriber-orion:
+      container_name: subscriber-orion
+      hostname: subscriber-orion
+      restart: always
+      build: .
+      command: nodemon /usr/src/app/orion-sub.js
+      networks:
+        - default
+        - proxy-orion-net-end
+        - new-scorpio-net-end
+        - stellio-proxy-net-end
+      ports:
+        - '3030:3030'
+      volumes:
+        - .:/usr/src/app
+  
+  # prometheus:
+    #  image: prom/prometheus:latest
+    #  container_name: prometheus
+    #  volumes:
+    #   - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    #   - prometheus_data:/prometheus
+    #  command:
+    #   - '--config.file=/etc/prometheus/prometheus.yml'
+    #   - '--storage.tsdb.path=/prometheus'
+    #   - '--web.console.libraries=/etc/prometheus/console_libraries'
+    #   - '--web.console.templates=/etc/prometheus/consoles'
+    #   - '--web.enable-lifecycle'
+    #  expose:
+    #   - 9090
+    #  ports:
+    #   - 9090:9090
+
+  # grafana:
+    #  image: grafana/grafana
+    #  container_name: grafana
+    #  network_mode: host
+    #  restart: always
+    #  ports:
+    #   - 9000:3000
+    #  volumes:
+    #   - grafana-data:/var/lib/grafana
+
+networks:
+    proxy-orion-net-end:
+        external:
+          name: orion_network_end
+    new-scorpio-net-end:
+        external:
+          name: scorpio_network_end
+    stellio-proxy-net-end:
+         external:
+             name: stellio_network_end
+
+
+#volumes:
+# grafana-data:
+# prometheus_data: {}

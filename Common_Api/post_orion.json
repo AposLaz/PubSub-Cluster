@@ -1,0 +1,52 @@
+{
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                13.398611,
+                52.554699
+            ]
+        }
+    },
+    "maxCapacity": {
+        "type": "Property",
+        "value": 50
+    },
+    "name": {
+        "type": "Property",
+        "value": "Corner Unit"
+    },
+    "stocks": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Product:001"
+    },
+    "locatedIn": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Building:store001",
+        "requestedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Person:bob-the-manager"
+        },
+        "installedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Person:employee001"
+        },
+        "statusOfWork": {
+            "type": "Property",
+            "value": "completed"
+        }
+    },
+    "numberOfItems": {
+        "type": "Property",
+        "value": 8
+    },
+    "numberOfItems11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111": {
+        "type": "Property",
+        "value": 89
+    },
+    "qwwewwwwwwwwwwwwwwwwwwwwwwwwwedwedwedwpppdkddkkdkkdkdkdkdkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkedwe": {
+        "type": "Property",
+        "value": 89
+    }
+}
