@@ -1,4 +1,4 @@
-First select and start a publish-subscribe system. You can run only a publish-subscribe system at time because many systems use same ports.
+<!-- First select and start a publish-subscribe system. You can run only a publish-subscribe system at time because many systems use same ports.
 If you press "docker-compose up" then you will run Apache Kafka and common_api which is the REST service. You send all messages in 
 REST service.
 Because Apache Kafka is in main docker-compose.yml, you have to stop it and its services if you want to start another pub-sub 
@@ -258,5 +258,5 @@ ab -c 200 -n 1000 http://localhost:3000/csourceRegistrations/{service_id}/?type=
 
 GET ENTITY AFTER REGISTRATION
 
-ab -s 240 -c 200 -n 1000 -H "Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"" -T 'application/json' http://localhost:3000/service_discovery/{service_id}/urn:ngsi-ld:Building:store001
+ab -s 240 -c 200 -n 1000 -H "Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"" -T 'application/json' http://localhost:3000/service_discovery/{service_id}/urn:ngsi-ld:Building:store001 -->
 

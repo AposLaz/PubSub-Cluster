@@ -31,7 +31,7 @@ const consume = async () => {
     await kafka_consumer.subscribe({topic})
     await kafka_consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            write_in_csv()
+            await write_in_csv()
             it = it + 1
             console.log(it)
         },
