@@ -9,8 +9,7 @@ services:
       build: .
       command: nodemon /usr/src/app/orion-sub.js
       networks:
-        - default
-        - proxy-orion-net-end
+        # - proxy-orion-net-end
         - new-scorpio-net-end
         - stellio-proxy-net-end
       ports:
@@ -46,14 +45,14 @@ services:
     #   - grafana-data:/var/lib/grafana
 
 networks:
-    proxy-orion-net-end:
-        external:
-          name: orion_network_end
+    # proxy-orion-net-end:
+    #     external:
+    #       name: orion_network_end
     new-scorpio-net-end:
         external:
           name: scorpio_network_end
     stellio-proxy-net-end:
-         external:
+        external:
              name: stellio_network_end
 
 

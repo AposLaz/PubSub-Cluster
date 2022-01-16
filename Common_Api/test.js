@@ -1,26 +1,19 @@
 obj = {
-    "id": "house2:smartrooms:room1",
-    "type": "Room",
-    "temperature": {
-          "value": 23,
-          "unitCode": "CEL",
-          "type": "Property",
-          "providedBy": {
-                  "type": "Relationship",
-                  "object": "smartbuilding:house2:sensor0815"
-           }
-     },
-    "isPartOf": {
-          "type": "Relationship",
-          "object": "smartcity:houses:house2"
-    },
-    "isPartOf111111111111111111111111112334223eerrr4ertty23333333333hrtjgrtkjghtrkjghtrkjghrtkjghrtjkhgtrkjghrtkjghrtjkghrtjkghrtjkghrtjkghrtkjghrtkjghrtkjghrtkgjhrktjghrtkjghrtertertertertererterterkjghtrjkghrtjkghrtjkghrtjkghrtkjghrtkjghrtjkghrtjkghrtkjghrtkjgh333333333333333333333333333333453245345353478888888888888888324857378245783458734725347ferufgerjhergwergwfuyfwegyuerwgfyeurwgffffffffffffewrgfyuegrwfyugewryufegrwyfguwggggggggggggggggggggggggewuyrgferyuwgfeuywrgfewygferyuwgfewryugwyuergfweuygfweyurgfewyurfgeyuwgfyuewgf": {
-          "type": "Relationship",
-          "object": "smartcity:houses:house2"
-    },
-    "@context": [{"Room": "urn:mytypes:room", "temperature": "myuniqueuri:temperature", "isPartOf": "myuniqueuri:isPartOf"},"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"]
-}
-  
+      "temperature": {
+            "value": 25123456789123456789,
+            "unitCode": "CEL",
+            "type": "Property",
+            "providedBy": {
+                    "type": "Relationship",
+                    "object": "smartbuilding:house2:sensor0815dsfgdfsgdsfgrgrtegtergetrgrerthjkerjhkwgherwhgewrjkghrkjhsdkjfewhroivhtriugherihwuityryhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhksdhfksdhfkhdferioghvrtiebhktrhslkfedhgslkdghdsfkjghdslkjgfhdlkvdfhskvjnfderuigheriughriuwhfoiqwehfiesujc3oihc3rejowfjherwuifewjrfoihewojerwfuiw4h87g54h89754ht5ht94tj03495tu49tj35409tj2409j3409j32f32490jf329rjd230jde3490r3209rj3409jfr34jr90r3r903j409fj349fj3409jrfj34r90r39rj3490fj349rj34980ru239ru3489rut95ut9432ut59785ytu87654tu384uf4fjh845h85467gyh3894fjh9304jf420fjheriiujewflekdffjg548gy5kgjtruigh7640jrgepgojroitgj985698439805rfgrewoigfjr3epoj348j43opjrf30j439f3iyt374hf8935h7584jgf48h54g5498iotrinhitrwn;hwq;roighrtwgrrtrywreeirrieoroieireiorierioerioreiorioreiotrhieitoi4rtghretoihritoevhbuirtehvoirvrettegertgergertgrtertegjhibregtbiurtgbrtigubretiugbtriuvrtbviuret"
+            }
+      },
+      "isPartOf": {
+            "type": "Relationship",
+            "object": "smartcity:houses:house2"
+      }
+    }
+    
 
 const size = Buffer.byteLength(JSON.stringify(obj))
 

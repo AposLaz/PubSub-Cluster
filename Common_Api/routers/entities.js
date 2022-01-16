@@ -210,7 +210,7 @@ router.post('/service_discovery/:service_id', (req, res)=>{
                         await write_in_csv_T2()
                         res.send("Pub success")
                     },async function(error) {
-                        await write_in_csv_Error()
+                        await write_in_csv_error()
                     res.send('There was a problem: ' + error.message);
                 })
             }
@@ -231,7 +231,7 @@ router.post('/service_discovery/:service_id', (req, res)=>{
                    run().then(async ()=>{
                      await write_in_csv_T2()
                      res.status(200).send("Entity posted succesfully")
-                   }).catch(e => write_in_csv_Error())
+                   }).catch(e => write_in_csv_error())
 
 
                 }catch (error){
@@ -633,7 +633,7 @@ router.post('/service_discovery/:service_id/:entityId/attrs', (req, res)=>{
         orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
             if(err)
             {
-                await write_in_csv_Error()
+                await write_in_csv_error()
                 res.send(err)
             }
             else{
@@ -647,7 +647,7 @@ router.post('/service_discovery/:service_id/:entityId/attrs', (req, res)=>{
         orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
             if(err)
             {
-                await write_in_csv_Error()
+                await write_in_csv_error()
                 res.send(err)
             }
             else{

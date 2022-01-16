@@ -25,7 +25,7 @@ app.use(express.urlencoded({extended:true}))
 
 app.post('/app',async (req,res)=>{
     await write_in_csv()
-    console.log(req)
+    //console.log(req)
     res.status(200).send()
 })
 
