@@ -71,10 +71,6 @@ networks:
         name: faye_network
     proxynet-kafka:
         name: kafka_network
-    localnet:
-      attachable: true
-    mongo_conn:
-        name: mongo_db
 
 # volumes:
 #   grafana-data:

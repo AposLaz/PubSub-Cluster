@@ -21,7 +21,7 @@ const {Kafka} = require('kafkajs');
 
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['kafka:9092']
+    brokers: ['kafka:29092'],
 })
 
 const admin = kafka.admin()
@@ -31,9 +31,6 @@ const run_admin = async ()=>{
         topics: [
             {
                 topic: 'send'
-            },
-            {
-                topic: 'receive'
             }
         ]
           
@@ -42,7 +39,13 @@ const run_admin = async ()=>{
 }
 run_admin().then(console.log("ok started")).catch(e => console.error(`[example/admin] ${e.message}`, e))
 const kafka_producer = kafka.producer()
-const kafka_consumer = kafka.consumer({ groupId: 'ngsi-gro1u222p' })
+const connect_prod = async () => { 
+    await kafka_producer.connect() 
+}
+
+connect_prod().then(console.log("producer connected")).catch(e => console.error('Producer didnt connected'))
+
+//const kafka_consumer = kafka.consumer({ groupId: 'ngsi-gro1u222p' })
 
 //////////////////////////////////////////////////////////////////////////////////////------------PUSHPIN
 
@@ -121,18 +124,7 @@ router.post('/service_discovery/:service_id', (req, res)=>{
         const service_id = req.params.service_id
         const content_type = req.get('Content-type');
         const ngsi = req.body
-        
-        const valid = (id,type)=>{
-            return new Promise((resolve, reject)=>{
-                if(type === undefined || id === undefined)
-                {
-                    return reject('Invalid request') 
-                }   
-                resolve(1)
-            })
-        }
     
-         valid(req.body.id,req.body.type).then(()=>{
             if(service_id == 'orion')
             {
             const url = 'http://orion:1026/ngsi-ld/v1/entities/'
@@ -223,76 +215,23 @@ router.post('/service_discovery/:service_id', (req, res)=>{
                 })
             }
             else if(service_id == 'kafka'){
-                //kafka-node
-                
-                options = {
-                    kafkaHost: 'kafka:9092'
-                }
-                const client_node = new kafka_node.KafkaClient(options);
-
-                let Consumer = kafka_node.Consumer
-                let consumer_node = new Consumer(
-                    client_node,
-                    [
-                        { topic: 'receive.kafka.entities', partition: 0 , offset: 0}
-                    ],
-                    {
-                        autoCommit: false,
-                        fetchMaxBytes: 1024 * 1024,
-                        fromOffset: true, 
-                        groupId: Math.random().toString(),
-                        //asyncPush: true,
-                        //onRebalance: (isAlreadyMember, callback) => { callback(); }
-                    }
-                );
-
-               const read = (callback)=>{
-                    let ret = "1"
-                    consumer_node.on('message', function (message) {
-                        let parse1 = JSON.parse(message.value)
-                        let parse2 = JSON.parse(parse1.payload)
-                        let id = parse2.fullDocument.id
-                        let lastOffset = message.highWaterOffset - 1
-                        //check if there is a query
-                       if(lastOffset <= message.offset){
-                            if(id === ngsi.id){
-                                ret = "The entity " + id +" Already Exists"
-                                return callback(ret)
-                            }
-                            else{
-                                return callback(ret)
-                            }
-                        }
-                        else if(id === ngsi.id){
-                            ret = "The entity " + id +" Already Exists"
-                            return callback(ret)
-                        }
-                    }); 
-                }
 
                 const run = async()=>{
-                    await kafka_producer.connect()
                     await kafka_producer.send({
                         topic: 'send',
+                        ack:1,
                         messages: [
-                                    { key: ngsi.id , value : JSON.stringify(ngsi) , partition: 0 }
+                                    { value : JSON.stringify(ngsi) }
                                 ]
                             })
-                    await kafka_producer.disconnect()
-                    res.status(200).send("Entity " + id + " posted succesfully")
                 }
 
                 try{
                 
-                   read((data)=>{
-                        consumer_node.close(true, function(message){
-                            if(data != "1"){
-                                res.status(404).send(data)
-                            }else{
-                                run()     
-                            }
-                        })
-                    })
+                   run().then(async ()=>{
+                     await write_in_csv_T2()
+                     res.status(200).send("Entity posted succesfully")
+                   }).catch(e => write_in_csv_Error())
 
 
                 }catch (error){
@@ -318,9 +257,6 @@ router.post('/service_discovery/:service_id', (req, res)=>{
             else{
                 res.send('This Service doesnt exist')
             } 
-        }).catch((e)=>{ 
-            res.send(e)
-            })
         
 })
 /////////////////////////////////////////////////////////////////----GET

@@ -45,7 +45,7 @@
 
 6) start experiments /Common_Api
   
-    hey -s 180 -p post.json -T application/ld+json -c 200 -n 1000 http://localhost:3001/service_discovery/pushpin
+    ab -s 180 -p post_orion.json -T application/ld+json -c 200 -n 1000 http://localhost:3001/service_discovery/pushpin
 
 
 
