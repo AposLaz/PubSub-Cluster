@@ -10,7 +10,7 @@ services:
       command: nodemon /usr/src/app/orion-sub.js
       networks:
         # - proxy-orion-net-end
-        - new-scorpio-net-end
+        # - new-scorpio-net-end
         - stellio-proxy-net-end
       ports:
         - '3030:3030'
@@ -48,11 +48,10 @@ networks:
     # proxy-orion-net-end:
     #     external:
     #       name: orion_network_end
-    new-scorpio-net-end:
-        external:
-          name: scorpio_network_end
+    # new-scorpio-net-end:
+    #     external:
+    #       name: scorpio_network_end
     stellio-proxy-net-end:
-        external:
              name: stellio_network_end
 
 

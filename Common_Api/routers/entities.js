@@ -658,12 +658,14 @@ router.post('/service_discovery/:service_id/:entityId/attrs', (req, res)=>{
     }
     else if(service_id == 'stellio'){
         const url = 'http://entity-service:8082/ngsi-ld/v1/entities/' + entity_id + '/attrs/'
-        orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , (err,body)=>{
+        orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
             if(err)
             {
+                await write_in_csv_error()
                 res.send(err)
             }
             else{
+                await write_in_csv_T2()
                 res.send(body)
             }   
        })
@@ -710,12 +712,17 @@ router.patch('/service_discovery/:service_id/:entityId/attrs', (req, res)=>{
     }
     else if(service_id == 'stellio'){
         const url = 'http://entity-service:8082/ngsi-ld/v1/entities/' + entity_id + '/attrs/'
-        orion_scorpio.patch_attrs_ngsi(ngsi,url , (err,body)=>{
+        
+        console.log(url)
+        
+        orion_scorpio.patch_attrs_ngsi(ngsi,url,content_type, Link , async (err,body)=>{
             if(err)
             {
+                await write_in_csv_error()
                 res.send(err)
             }
             else{
+                await write_in_csv_T2()
                 res.send(body)
             }   
        })

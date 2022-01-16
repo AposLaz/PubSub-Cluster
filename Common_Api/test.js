@@ -1,18 +1,15 @@
 obj = {
       "temperature": {
-            "value": 25123456789123456789,
-            "unitCode": "CEL",
-            "type": "Property",
-            "providedBy": {
-                    "type": "Relationship",
-                    "object": "smartbuilding:house2:sensor0815dsfgdfsgdsfgrgrtegtergetrgrerthjkerjhkwgherwhgewrjkghrkjhsdkjfewhroivhtriugherihwuityryhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhksdhfksdhfkhdferioghvrtiebhktrhslkfedhgslkdghdsfkjghdslkjgfhdlkvdfhskvjnfderuigheriughriuwhfoiqwehfiesujc3oihc3rejowfjherwuifewjrfoihewojerwfuiw4h87g54h89754ht5ht94tj03495tu49tj35409tj2409j3409j32f32490jf329rjd230jde3490r3209rj3409jfr34jr90r3r903j409fj349fj3409jrfj34r90r39rj3490fj349rj34980ru239ru3489rut95ut9432ut59785ytu87654tu384uf4fjh845h85467gyh3894fjh9304jf420fjheriiujewflekdffjg548gy5kgjtruigh7640jrgepgojroitgj985698439805rfgrewoigfjr3epoj348j43opjrf30j439f3iyt374hf8935h7584jgf48h54g5498iotrinhitrwn;hwq;roighrtwgrrtrywreeirrieoroieireiorierioerioreiorioreiotrhieitoi4rtghretoihritoevhbuirtehvoirvrettegertgergertgrtertegjhibregtbiurtgbrtigubretiugbtriuvrtbviuret"
-            }
-      },
-      "isPartOf": {
-            "type": "Relationship",
-            "object": "smartcity:houses:house2"
+        "type": "Property",
+        "value": 120,
+        "unitCode": "CEL",
+        "observedAt": "2020-05-10T10:20:30.98601Z",
+        "observedBy": {
+           "type": "Relationship",
+           "object": "urn:ngsi-ld:Sensor:0irifhrhgrighieheirfheruigriuhgeoewrhgoeghoewrtewrtkhergofiwbervncerbvernvbrewverbjvbrkjtvrewdsfdsvdfvdsvfewrvrewvewrwrghrnbvowvnroevnoeirwvneriowvniu3rj93ergwfurefgwieurvbwiuebvweureuivwebrvalfnalskn4guvwrhvirvbeksjvbhvreuiorunvrwuighervoingewrxwmoioerwghowrghowerhgierogheroighewroighewrioghewroigheroigheroigherogivhreibovoeirvioreghrtghgfhjfjkjkfdgsjkdfsjvfdndfvnlkfdkvneoirvoi4rh895ht5498h8934hf3498hf83984r38ur32e9u324t98340t9urfh9fu934fh3948f43ru934toh3uihtr984980ru98345t98f734h5678897t34528795u2897r3u987r352r987j0352j9873r250937805r985h7ft598hg346h6983g5248g5h32h8932548935fh7j8j3f573j985fj93232f54j9524j9f83j925f8409j03254f898354f89y54yh678235ty57857y8t2cty8n9t98yc2nty982598t589ny00n32tv54y98832t549yvn84239tyy93h2ty98hfy892t34y73tf73842rj9039-0dru2k90r-2rdjj8j97d23dj945793f208j453oikruetwujrncerewvhkjnfv98324nvc390m2-4ur356gfhjd39c24n1"
+        }
       }
-    }
+   }
     
 
 const size = Buffer.byteLength(JSON.stringify(obj))

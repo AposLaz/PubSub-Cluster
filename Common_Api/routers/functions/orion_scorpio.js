@@ -38,7 +38,7 @@ const post_attrs_ngsi = (ngsi,url, content_type, Link,callback)=>{
 
 const patch_attrs_ngsi = (ngsi,url, content_type, Link,callback)=>{
         const ngsi_conv = JSON.stringify(ngsi) 
-    
+
         request.patch({
             headers: {'content-type' : content_type, 'Link' : Link  },
             url:     url,

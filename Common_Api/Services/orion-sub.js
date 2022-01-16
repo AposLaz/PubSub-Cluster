@@ -22,10 +22,12 @@ const port = process.env.PORT || 3030
 app.use(express.json({type: '*/*'}))      //for access json values and handle them with req
 app.use(express.urlencoded({extended:true}))
 
+let it=0
 
 app.post('/app',async (req,res)=>{
     await write_in_csv()
-    //console.log(req)
+    it=it+1
+    console.log(it)
     res.status(200).send()
 })
 

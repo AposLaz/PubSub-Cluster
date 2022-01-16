@@ -246,7 +246,7 @@ curl --location --request POST 'localhost:3000/service_discovery/orion/urn:ngsi-
 
 PATCH ENTITY ( orion-ld, scorpio, stellio )
 
-ab -s 180 -p post-orion.json -T application/json -c 1 -n 1 http://localhost:3000/service_discovery/orion/urn:ngsi-ld:Shelf:unit001/attrs/
+ab -s 180 -p post-stellio.json -T application/json -c 1 -n 1 http://localhost:3000/service_discovery/orion/urn:ngsi-ld:Shelf:unit001/attrs/
 
 POST REGISTRATION ( orion-ld, scorpio )
 

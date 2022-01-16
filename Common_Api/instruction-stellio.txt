@@ -1,0 +1,95 @@
+1) VM-2
+
+>> docker-compose up
+
+---------- POST ENTITY
+
+curl --location --request POST 'localhost:3001/service_discovery/stellio' \
+--header 'Content-Type: application/ld+json' \
+--data-raw '{
+    "id": "urn:ngsi-ld:BeeHive:01",
+    "type": "BeeHive",
+    "humidity": {
+        "type": "Property",
+        "observedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Sensor:02"
+        },
+        "value": 60,
+        "observedAt": "2019-10-26T21:32:52.98601Z",
+        "unitCode": "P1"
+    },
+    "temperature": {
+        "type": "Property",
+        "observedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Sensor:01"
+        },
+        "value": 22.2,
+        "observedAt": "2019-10-26T21:32:52.98601Z",
+        "unitCode": "CEL"
+    },
+    "belongs": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Apiary:01"
+    },
+    "managedBy": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Beekeeper:01"
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                24.30623,
+                60.07966
+            ]
+        }
+    },
+    "@context": "https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/master/apic/jsonld-contexts/apic-compound.jsonld"
+}'
+
+---------- TRY GET ENTITY
+
+curl --location --request GET 'localhost:3001/service_discovery/stellio/urn:ngsi-ld:BeeHive:01' \
+--header 'Link: <https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/master/apic/jsonld-contexts/apic-compound.jsonld>; rel=http://www.w3.org/ns/json-ld#context; type=application/ld+json'
+
+
+--------- POST SUBSCRIPTION
+
+curl --location --request POST 'http://localhost:8080/ngsi-ld/v1/subscriptions' \
+--header 'Content-Type: application/ld+json' \
+--data-raw '{
+  "id":"urn:ngsi-ld:Subscription:02",
+  "type":"Subscription",
+  "entities": [
+    {
+      "type": "BeeHive"
+    }
+  ],
+  "q": "temperature>40",
+  "notification": {
+    "attributes": ["temperature"],
+    "format": "normalized",
+    "endpoint": {
+      "uri": "http://subscriber-orion:3030/app",
+      "accept": "application/json"
+    }
+  },
+  "@context": [
+     "https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/master/apic/jsonld-contexts/apic-compound.jsonld"
+  ]
+}'
+
+
+---------- GET SUBSCRIPTION
+
+curl --location --request GET 'http://localhost:8080/ngsi-ld/v1/subscriptions/urn:ngsi-ld:Subscription:02' \
+--header 'Link: <https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/master/apic/jsonld-contexts/apic-compound.jsonld>; rel=http://www.w3.org/ns/json-ld#context; type=application/ld+json'
+
+---------- Experiments
+
+ab -s 180 -p post_stellio.json -T application/json -H 'Link: <https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/master/apic/jsonld-contexts/apic-compound.jsonld>; rel=http://www.w3.org/ns/json-ld#context; type=application/ld+json' -c 1 -n 1 http://localhost:3001/service_discovery/stellio/urn:ngsi-ld:BeeHive:01/attrs
+
+
