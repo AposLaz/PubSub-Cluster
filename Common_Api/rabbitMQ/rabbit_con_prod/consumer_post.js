@@ -1,6 +1,4 @@
-var amqp = require('amqplib/callback_api');
-const mongo = require('./mongodb-init'); 
-const db=mongo.getDB();  //getDB
+var amqp = require('amqplib');
 
 const RabbitSettings = {
     protocol: 'amqp',
@@ -19,70 +17,41 @@ const RabbitSettings = {
 
 
 async function connectional(){
-    
-    amqp.connect(RabbitSettings, function(error0, connection) {
-        if (error0) {
-          throw error0;
-        }
-        connection.createChannel(function(error1, channel) {
-          if (error1) {
-            throw error1;
-          }
-          console.log("POST: channel created")
-          var queue = 'rpc_queue_post';
-      
-          channel.assertQueue(queue, {
-            durable: false
-          });
-          channel.prefetch(1);
-          console.log('POST: waiting for requests');
-      
-          channel.consume(queue, function reply(msg) {
-            //console.log('POST: ............');
-              let query = JSON.parse(msg.content);
-                let result = {
-                    ok : "ok"
-                }
-               // console.log(query.id)
+  try {
+    //Here is our connection
+    const connect = await amqp.connect(RabbitSettings)
+    console.log("The connection establised with RabbitMQ...")
 
-                db.collection('entities').find({'id': query.id}).toArray(function(err, results) {
-                    if (results.length > 0) {
-                        res = {Error: 'Resource already exists'}
-                        channel.sendToQueue(msg.properties.replyTo,
-                            Buffer.from(JSON.stringify(res)), {
-                              correlationId: msg.properties.correlationId
-                            });
-                    } else {
-                        db.collection('entities').insertOne(query, {'forceServerObjectId':true},function (err, result) {
-                            if (err) {
-                                channel.sendToQueue(msg.properties.replyTo,
-                                    Buffer.from(JSON.stringify(err)), {
-                                      correlationId: msg.properties.correlationId
-                                    });
-                            } else {
-                                resulta = {
-                                    Location: '/entities:'+query.id
-                                }
-                                channel.sendToQueue(msg.properties.replyTo,
-                                    Buffer.from(JSON.stringify(resulta)), {
-                                      correlationId: msg.properties.correlationId
-                                    });
-                            }
-                    
-                        }); 
-                    }
-                }); 
-              //let final_entity_message = JSON.stringify(query)
-      
-              //console.log("Try find : "+JSON.stringify(query));
+    //Create a channel
+    const channel = await connect.createChannel()
+    console.log("The channel is created ...")
 
-              
-              
-            channel.ack(msg);
-          });
-          
-        });
-      });
+    const exchange = "direct_exchange"
+
+    await channel.assertExchange(exchange,'direct',{
+        durable:false
+    })
+    console.log(`The Exchange ${exchange} is created ...`)
+
+    const routingKey = "routingKeyA"
+
+    const direct_queue = await channel.assertQueue('',{
+        exclusive:true //delete the queue when the messages delivered
+    })
+         //bind
+    await channel.bindQueue(direct_queue.queue,exchange,routingKey)
+
+        channel.consume(direct_queue.queue, function(message){
+                let entity = JSON.parse(message.content);
+                let final_entity_message = JSON.stringify(entity)
+                console.log(`I consumed the entity with body : ${final_entity_message}`)
+        }, {
+            noAck: true
+        })
+
+  } catch (e) {
+      console.log(e)
+  }
 }
 
 connectional();

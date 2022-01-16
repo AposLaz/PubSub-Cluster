@@ -17,33 +17,33 @@ const rabbit_consumer = require('./direct_exchange/consumer_get')
 const faye = require('faye');
 
 /////////////////////////////////////----------------KAFKA CONSTS
-const {Kafka} = require('kafkajs');
+// const {Kafka} = require('kafkajs');
 
-const kafka = new Kafka({
-    clientId: 'my-app',
-    brokers: ['kafka:29092'],
-})
+// const kafka = new Kafka({
+//     clientId: 'my-app',
+//     brokers: ['kafka:29092'],
+// })
 
-const admin = kafka.admin()
-const run_admin = async ()=>{
-    await admin.connect()
-    await admin.createTopics({
-        topics: [
-            {
-                topic: 'send'
-            }
-        ]
+// const admin = kafka.admin()
+// const run_admin = async ()=>{
+//     await admin.connect()
+//     await admin.createTopics({
+//         topics: [
+//             {
+//                 topic: 'send'
+//             }
+//         ]
           
-    })
-    await admin.disconnect()
-}
-run_admin().then(console.log("ok started")).catch(e => console.error(`[example/admin] ${e.message}`, e))
-const kafka_producer = kafka.producer()
-const connect_prod = async () => { 
-    await kafka_producer.connect() 
-}
+//     })
+//     await admin.disconnect()
+// }
+// run_admin().then(console.log("ok started")).catch(e => console.error(`[example/admin] ${e.message}`, e))
+// const kafka_producer = kafka.producer()
+// const connect_prod = async () => { 
+//     await kafka_producer.connect() 
+// }
 
-connect_prod().then(console.log("producer connected")).catch(e => console.error('Producer didnt connected'))
+// connect_prod().then(console.log("producer connected")).catch(e => console.error('Producer didnt connected'))
 
 //const kafka_consumer = kafka.consumer({ groupId: 'ngsi-gro1u222p' })
 

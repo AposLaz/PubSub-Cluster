@@ -1,6 +1,37 @@
 var amqp = require('amqplib');
 var amqp_callback = require('amqplib/callback_api');
 
+
+const fs = require('fs');
+const csvWriter = require('csv-write-stream')
+
+const write_in_csv_T2 = () => {
+    if (!fs.existsSync('./routers/T2.csv'))
+        writer2 = csvWriter({ headers: ["T2"]});
+    else
+        writer2 = csvWriter({sendHeaders: false});
+
+    writer2.pipe(fs.createWriteStream('./routers/T2.csv', {flags: 'a'}));
+    writer2.write({
+    T2: Date.now(),
+    });
+    writer2.end();
+}
+
+const write_in_csv_error = () => {
+    if (!fs.existsSync('./routers/Error.csv'))
+        writer3 = csvWriter({ headers: ["Error"]});
+    else
+        writer3 = csvWriter({sendHeaders: false});
+
+    writer3.pipe(fs.createWriteStream('./routers/Error.csv', {flags: 'a'}));
+    writer3.write({
+    Error: Date.now(),
+    });
+    writer3.end();
+}
+
+
 const RabbitSettings = {
     protocol: 'amqp',
     hostname: 'rabbitmq',
@@ -18,86 +49,35 @@ const rabbit_direct_producer = async function connect(ngsi,callback){
     if (error0) {
       throw error0;
     }
-    connection.createChannel(function(error1, channel) {
+    connection.createConfirmChannel(function(error1, channel) {
       if (error1) {
         throw error1;
       }
-      channel.assertQueue('', {
-        exclusive: true
-      }, function(error2, q) {
-        if (error2) {
-          throw error2;
-        }
+      var exchange = 'direct_exchange';
 
-        var correlationId = "routingKey_post";
-        
-        channel.consume(q.queue, function(msg) {
-          if (msg.properties.correlationId == correlationId) {
-            const final_con = JSON.parse(msg.content);
-            const final = JSON.stringify(final_con);
-           // console.log("I CONSUMED"+final);
-            callback(null,final)
+      var routing_key = "routingKeyA";
+     
+      channel.assertExchange(exchange, 'direct', {
+        durable: false
+      });
+
+      channel.publish(exchange, routing_key, Buffer.from(JSON.stringify(ngsi)), {},async function (err,ok){
+         if (err !== null){ 
+           //console.warn('Message nacked!')
+           await write_in_csv_error()
+           callback(err,null)
           }
-        }, {
-          noAck: true
-        });
-  
-        channel.sendToQueue('rpc_queue_post',
-          Buffer.from(JSON.stringify(ngsi)),{ 
-            correlationId: correlationId, 
-            replyTo: q.queue });
-            //console.log("I SENT ........." + JSON.stringify(ngsi))
+         else {
+           //console.log('Message acked')
+           await write_in_csv_T2()
+           callback(null,ok)
+         }
       });
     });
   });
 
 }
 
-/*-----------------------------------------------------------------------
-                             GET
--------------------------------------------------------------------------*/
-
-const rabbit_get = async function connect(ngsi,callback){
-
-    amqp_callback.connect(RabbitSettings, function(error0, connection) {
-        if (error0) {
-          throw error0;
-        }
-        connection.createChannel(function(error1, channel) {
-          if (error1) {
-            throw error1;
-          }
-          channel.assertQueue('', {
-            exclusive: true
-          }, function(error2, q) {
-            if (error2) {
-              throw error2;
-            }
-
-            var correlationId = "post_get_without_id";
-            
-            channel.consume(q.queue, function(msg) {
-              if (msg.properties.correlationId == correlationId) {
-                const final_con = JSON.parse(msg.content);
-                const final = JSON.stringify(final_con);
-              //  console.log("I CONSUMED"+final);
-                callback(null,final)
-              }
-            }, {
-              noAck: true
-            });
-      
-            channel.sendToQueue('rpc_queue_get',
-              Buffer.from(JSON.stringify(ngsi)),{ 
-                correlationId: correlationId, 
-                replyTo: q.queue });
-             //   console.log("I SENT ........." + JSON.stringify(ngsi))
-          });
-        });
-      });
-}
-
 module.exports = {
-    rabbit_direct_producer,
-    rabbit_get
+    rabbit_direct_producer
 }
