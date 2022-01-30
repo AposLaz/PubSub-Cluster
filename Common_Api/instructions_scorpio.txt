@@ -1,6 +1,51 @@
 1) VM-2
 
->> docker-compose up
+>> docker-compose -f scorpio-aaio.yml up
+
+   Set up 4 Brokers
+
+>> docker-compose -f scorpio-aaio.yml scale kafka=4
+
+   GET topics
+
+>> docker exec -ti docker-compose_kafka_1 /opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+
+   DESCRIBE TO A TOPIC
+
+>> docker exec -ti docker-compose_kafka_1 /opt/kafka/bin/kafka-topics.sh --describe --zookeeper zookeeper:2181 --topic ENTITY_APPEND
+
+   GET broker list
+
+>> docker exec -ti zookeeper bin/bash
+>> ./bin/zkCli.sh
+>> ls /brokers/ids
+   
+   ADD PARTITIONS
+
+>> docker exec -ti docker-compose_kafka_1 /opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --alter --topic ENTITY_APPEND --partitions 4 
+
+   REASSIGN_PARTITIONS
+
+>> docker exec -ti docker-compose_kafka_1 bash
+>> cd opt/kafka/bin
+>> cat > increase-replication-factor.json
+
+   {"version":1,
+    "partitions":[
+       {"topic":"ENTITY_APPEND","partition":0,"replicas":[1001,1004]},
+       {"topic":"ENTITY_APPEND","partition":1,"replicas":[1002,1003]},
+       {"topic":"ENTITY_APPEND","partition":2,"replicas":[1003,1001]},
+       {"topic":"ENTITY_APPEND","partition":3,"replicas":[1004,1002]}
+   ]}
+  
+>> kafka-reassign-partitions.sh --zookeeper zookeeper:2181  --reassignment-json-file increase-replication-factor.json --execute
+
+   READ DATA FROM A TOPIC
+
+>> docker exec -ti docker-compose_kafka_1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic ENTITY_APPEND --from-beginning
+
+#### CHANGE PARTITION FROM SCORPIO 
+ENTITY_APPEND 
 
 ---------- POST ENTITY
 

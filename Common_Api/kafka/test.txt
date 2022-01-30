@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  
+  zookeeper:
+    image: wurstmeister/zookeeper
+    hostname: zookeeper
+    container_name: zookeeper
+    networks:
+      - default
+    ports:
+      - "2181"
+  kafka:
+    build: kafka-Dockerfile
+    # container_name: kafka
+    #hostname: kafka
+    ports:
+      - "9092"
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      #KAFKA_CREATE_TOPICS: "ENTITY_APPEND:4:2"
+      # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      # KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default

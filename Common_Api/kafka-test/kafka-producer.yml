@@ -1,0 +1,18 @@
+# Uncomment all
+version: "3.8"
+
+services: 
+
+    app:
+        container_name: docker-node
+        hostname: docker-node
+        restart: always
+        build: .
+        command: nodemon /usr/src/app/entities.js
+        ports:
+            - '3001:3000'
+        volumes:
+            - .:/usr/src/app
+        network_mode: host
+
+    

@@ -8,24 +8,18 @@ services:
         restart: always
         build: .
         command: nodemon /usr/src/app/index.js
-        networks:
-            - default
-            - new-proxy-net
-            - new-orion-net
-            - proxynet-kafka
-            - proxynet #rabbitMQ
-            - proxynet-faye
-            - proxynet-push
-            - scorpio-proxy-net
         ports:
-            - '3001:3000'
+            - '3001:3001'
         volumes:
             - .:/usr/src/app
-        # links:
-        #     - kafka
-        # depends_on: 
-        #     - kafka
-    
+        networks:
+            - scorpio-proxy-net
+            - new-proxy-net
+            - proxynet
+        # network_mode: host
+        # networks:
+        #   - proxynet
+       
   # prometheus:
     #  image: prom/prometheus:latest
     #  container_name: prometheus
