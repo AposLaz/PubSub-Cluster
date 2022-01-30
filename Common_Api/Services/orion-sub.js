@@ -28,7 +28,7 @@ app.post('/app',async (req,res)=>{
     await write_in_csv()
     it=it+1
     console.log(it)
-    res.status(200).send()
+    //res.status(200).send()
 })
 
 app.listen(port, ()=>{

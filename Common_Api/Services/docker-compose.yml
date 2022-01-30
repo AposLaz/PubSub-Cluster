@@ -11,7 +11,7 @@ services:
       networks:
         # - proxy-orion-net-end
         # - new-scorpio-net-end
-        - stellio-proxy-net-end
+         - stellio-proxy-net-end
       ports:
         - '3030:3030'
       volumes:
@@ -52,7 +52,7 @@ networks:
     #     external:
     #       name: scorpio_network_end
     stellio-proxy-net-end:
-             name: stellio_network_end
+              name: stellio_network_end
 
 
 #volumes:

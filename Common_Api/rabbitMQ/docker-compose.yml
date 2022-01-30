@@ -3,46 +3,125 @@ version: "3.8"
 services: 
     
 
-   rabbitmq:
+   rabbit-1:
         image: rabbitmq:3-management
-        hostname: rabbitmq
-        container_name: rabbitmq
+        hostname: rabbit-1
+        container_name: rabbit-1
         networks:
             - my-proxy-net
             - sub-proxy-net
+            - rabbit-net
         expose:
-            - "5672"
+            - "8081"
             - "15672"
         ports:
-            - "15672:15672"
-            - "5672:5672"
-    
-   prometheus:
-     image: prom/prometheus:latest
-     container_name: prometheus
-     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-     expose:
-      - 9090
-     ports:
-      - 9090:9090
+            - "8081:15672"
+        environment:
+            - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+            - RABBITMQ_ERLANG_COOKIE='ETOBVBEFXUPGETFECHSQ'
+        volumes:
+            - ${PWD}/config/rabbit-1/:/config/
 
-   grafana:
-     image: grafana/grafana
-     container_name: grafana
-     network_mode: host
-     restart: always
-     ports:
-      - 9000:3000
-     volumes:
-      - grafana-data:/var/lib/grafana
+   rabbit-2:
+        image: rabbitmq:3-management
+        hostname: rabbit-2
+        container_name: rabbit-2
+        depends_on:
+            - rabbit-1
+        networks:
+            - my-proxy-net
+            - sub-proxy-net
+            - rabbit-net
+        expose:
+            - "8082"
+            - "15672"
+        ports:
+            - "8082:15672"
+        environment:
+            - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+            - RABBITMQ_ERLANG_COOKIE='ETOBVBEFXUPGETFECHSQ'
+        volumes:
+            - ${PWD}/config/rabbit-2/:/config/
+        healthcheck:
+            test: curl -f https://localhost:8081 || exit 1
+
+   rabbit-3:
+        image: rabbitmq:3-management
+        hostname: rabbit-3
+        container_name: rabbit-3
+        depends_on:
+            - rabbit-1
+            - rabbit-2
+        networks:
+            - my-proxy-net
+            - sub-proxy-net
+            - rabbit-net
+        expose:
+            - "8083"
+            - "15672"
+        ports:
+            - "8083:15672"
+        environment:
+            - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+            - RABBITMQ_ERLANG_COOKIE='ETOBVBEFXUPGETFECHSQ'
+        volumes:
+            - ${PWD}/config/rabbit-3/:/config/
+        healthcheck:
+            test: curl -f https://localhost:8082 || exit 1
+
+   rabbit-4:
+        image: rabbitmq:3-management
+        hostname: rabbit-4
+        container_name: rabbit-4
+        depends_on:
+            - rabbit-1
+            - rabbit-2
+            - rabbit-3
+        networks:
+            - my-proxy-net
+            - sub-proxy-net
+            - rabbit-net
+        expose:
+            - "8084"
+            - "15672"
+        ports:
+            - "8084:15672"
+        environment:
+            - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+            - RABBITMQ_ERLANG_COOKIE='ETOBVBEFXUPGETFECHSQ'
+        volumes:
+            - ${PWD}/config/rabbit-4/:/config/
+        healthcheck:
+            test: curl -f https://localhost:8083 || exit 1
+
+
+    
+#    prometheus:
+#      image: prom/prometheus:latest
+#      container_name: prometheus
+#      volumes:
+#       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#       - prometheus_data:/prometheus
+#      command:
+#       - '--config.file=/etc/prometheus/prometheus.yml'
+#       - '--storage.tsdb.path=/prometheus'
+#       - '--web.console.libraries=/etc/prometheus/console_libraries'
+#       - '--web.console.templates=/etc/prometheus/consoles'
+#       - '--web.enable-lifecycle'
+#      expose:
+#       - 9090
+#      ports:
+#       - 9090:9090
+
+#    grafana:
+#      image: grafana/grafana
+#      container_name: grafana
+#      network_mode: host
+#      restart: always
+#      ports:
+#       - 9000:3000
+#      volumes:
+#       - grafana-data:/var/lib/grafana
 
 
 networks:
@@ -52,7 +131,9 @@ networks:
     sub-proxy-net:
         external:
             name: rabbit_sub_net
+    rabbit-net:
+        name: rabbitmq_net
 
-volumes:
-  grafana-data:
-  prometheus_data: {}
+# volumes:
+#   grafana-data:
+#   prometheus_data: {}

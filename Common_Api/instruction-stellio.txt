@@ -2,6 +2,72 @@
 
 >> docker-compose up
 
+>> docker-compose scale kafka=4
+   
+   ------------
+  | GET topics |
+   ------------
+   
+>> docker exec -ti stellio_kafka_1 /opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+  
+  ----------------------
+  | DESCRIBE TO A TOPIC |
+  ----------------------
+
+>> docker exec -ti stellio_kafka_1 /opt/kafka/bin/kafka-topics.sh --describe --zookeeper zookeeper:2181 --topic cim.entity.BeeHive
+  
+   ----------------
+  | GET broker list |
+   ----------------
+
+>> docker exec -ti zookeeper bin/bash
+>> ./bin/zkCli.sh
+>> ls /brokers/ids
+
+   ---------------
+  | ADD PARTITIONS |
+   ---------------
+
+>> docker exec -ti stellio_kafka_1 /opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --alter --topic cim.entity.BeeHive --partitions 4
+>> docker exec -ti stellio_kafka_1 /opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --alter --topic cim.notification --partitions 4 
+  
+  -----------------------
+  | REASSIGN_PARTITIONS |
+  -----------------------
+
+>> docker exec -ti stellio_kafka_1 bash
+>> cd opt/kafka/bin
+>> cat > increase-replication-factor-BeeHive.json
+
+   {"version":1,
+    "partitions":[
+       {"topic":"cim.entity.BeeHive","partition":0,"replicas":[1001,1004]},
+       {"topic":"cim.entity.BeeHive","partition":1,"replicas":[1002,1003]},
+       {"topic":"cim.entity.BeeHive","partition":2,"replicas":[1003,1001]},
+       {"topic":"cim.entity.BeeHive","partition":3,"replicas":[1004,1002]}
+   ]}
+
+>> cat > increase-replication-factor-notification.json
+
+   {"version":1,
+    "partitions":[
+       {"topic":"cim.notification","partition":0,"replicas":[1001,1004]},
+       {"topic":"cim.notification","partition":1,"replicas":[1002,1003]},
+       {"topic":"cim.notification","partition":2,"replicas":[1003,1001]},
+       {"topic":"cim.notification","partition":3,"replicas":[1004,1002]}
+   ]}  
+
+>> kafka-reassign-partitions.sh --zookeeper zookeeper:2181  --reassignment-json-file increase-replication-factor-BeeHive.json --execute
+>> kafka-reassign-partitions.sh --zookeeper zookeeper:2181  --reassignment-json-file increase-replication-factor-notification.json --execute
+  
+  -------------------------
+  | READ DATA FROM A TOPIC|
+  -------------------------
+
+>> docker exec -ti docker-compose_kafka_1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic ENTITY_APPEND --from-beginning
+
+#### CHANGE PARTITION FROM SCORPIO
+
 ---------- POST ENTITY
 
 curl --location --request POST 'localhost:3001/service_discovery/stellio' \

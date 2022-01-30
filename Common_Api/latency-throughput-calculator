@@ -1,0 +1,7 @@
+https://www.sas.co.uk/blog/what-is-network-latency-how-do-you-use-a-latency-calculator-to-calculate-throughput
+
+Throughput = (number of requests) / (total time).
+
+Throughput – indicates the number of transactions per second an application can handle, the amount of transactions 
+produced over time during a test. For every application there are lots of users performing lots of different requests. 
+To ensure that, load and performance testing is the solution.

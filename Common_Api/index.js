@@ -9,7 +9,7 @@ const body_parser = require('body-parser')
 //const Ajv = require('ajv');
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 
 app.use(express.json({type: '*/*'}))      //for access json values and handle them with req
 app.use(express.urlencoded({extended:true}))

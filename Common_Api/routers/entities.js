@@ -4,64 +4,97 @@ const router = new express.Router()
 const request = require('request');
 const qs = require('querystring')
 const orion_scorpio = require('./functions/orion_scorpio');
-const axios = require('axios').default;
-const kafka_node = require('kafka-node')
 
 /////////////////////////////////////---------------RABBIT CONSTS
 //producer
+var amqp = require('amqplib');
+
 const rabbit_producer = require('./direct_exchange/producer')
-const rabbit_consumer = require('./direct_exchange/consumer_get')
 
 
-/////////////////////////////////////----------------FAYE CONSTS
-const faye = require('faye');
+const RabbitSettings = {
+    protocol: 'amqp',
+    hostname: 'rabbit-1',
+    port: 5672,
+    username: 'guest',
+    password: 'guest',
+    vhost: '/',
+    authMechanism: ['PLAIN','AMQPLAIN','EXTERNAL']
+}
+let data_d
+let channel1
+let channel2
+let channel3
+let channel4
 
-/////////////////////////////////////----------------KAFKA CONSTS
-// const {Kafka} = require('kafkajs');
+const connect_channels_rabbitMQ = async () => { 
+    const connect1 = await amqp.connect(RabbitSettings)
+    const connect2 = await amqp.connect(RabbitSettings)
+    const connect3 = await amqp.connect(RabbitSettings)
+    const connect4 = await amqp.connect(RabbitSettings)
 
-// const kafka = new Kafka({
-//     clientId: 'my-app',
-//     brokers: ['kafka:29092'],
-// })
+    const channel1 = await connect1.createConfirmChannel()
+    const channel2 = await connect2.createConfirmChannel()
+    const channel3 = await connect3.createConfirmChannel()
+    const channel4 = await connect4.createConfirmChannel()
 
-// const admin = kafka.admin()
-// const run_admin = async ()=>{
-//     await admin.connect()
-//     await admin.createTopics({
-//         topics: [
-//             {
-//                 topic: 'send'
-//             }
-//         ]
+    const exchange = "direct_exchange"
+
+    await channel1.assertExchange(exchange,'direct',{ durable:true })
+    await channel2.assertExchange(exchange,'direct',{ durable:true })
+    await channel3.assertExchange(exchange,'direct',{ durable:true })
+    await channel4.assertExchange(exchange,'direct',{ durable:true })    
+
+    return [channel1,channel2,channel3,channel4]
+}
+/*
+    connect_channels_rabbitMQ().then((data) => {
+        data_d = data
+    }).catch(e => console.error(e))
+
+    setTimeout(()=>{
+        channel1 = data_d[0]
+        channel2 = data_d[1]
+        channel3 = data_d[2]
+        channel4 = data_d[3]
+    }, 5000)
+*/
+////////////////////////////////////////////////////////////////////////////
+
+
+const {Kafka} = require('kafkajs');
+
+const kafka = new Kafka({
+    clientId: 'my-app',
+    brokers: ['kafka:9094'],
+})
+
+const admin = kafka.admin()
+const run_admin = async ()=>{
+    await admin.connect()
+    await admin.createTopics({
+        topics: [
+            {
+                topic: 'send',
+                numPartitions: 4,
+                replicationFactor: 2
+            }
+        ]
           
-//     })
-//     await admin.disconnect()
-// }
-// run_admin().then(console.log("ok started")).catch(e => console.error(`[example/admin] ${e.message}`, e))
-// const kafka_producer = kafka.producer()
-// const connect_prod = async () => { 
-//     await kafka_producer.connect() 
-// }
+    })
+    await admin.disconnect()
+}
+run_admin().then(console.log("ok started")).catch(e => console.error(`[example/admin] ${e.message}`, e))
+const kafka_producer = kafka.producer()
+const connect_prod = async () => { 
+    await kafka_producer.connect() 
+}
 
-// connect_prod().then(console.log("producer connected")).catch(e => console.error('Producer didnt connected'))
+connect_prod().then(console.log("producer connected")).catch(e => console.error('Producer didnt connected'))
 
-//const kafka_consumer = kafka.consumer({ groupId: 'ngsi-gro1u222p' })
+const kafka_consumer = kafka.consumer({ groupId: 'ngsi-gro1u222p' })
 
 //////////////////////////////////////////////////////////////////////////////////////------------PUSHPIN
-
-const { ServeGrip } = require( '@fanoutio/serve-grip' );
-const { Publisher, PublishException } = require('@fanoutio/grip');
-
-
-
-const CHANNEL_NAME = 'get_back';
-const PUSHPIN_URL = "http://pushpin:5561/";
-
-const serveGrip = new ServeGrip({
-    grip: {
-        control_uri: PUSHPIN_URL,
-    },
-});
 
 const fetch = require('node-fetch');
 
@@ -115,6 +148,8 @@ const write_in_csv_error = () => {
 
 */
 ////////////////////////////////////////////////////////////////--------POST
+let count = 1
+let j
 
 router.post('/service_discovery/:service_id', (req, res)=>{
 
@@ -124,12 +159,13 @@ router.post('/service_discovery/:service_id', (req, res)=>{
         const service_id = req.params.service_id
         const content_type = req.get('Content-type');
         const ngsi = req.body
-    
-            if(service_id == 'orion')
-            {
-            const url = 'http://orion:1026/ngsi-ld/v1/entities/'
-           // console.log(url)
-            orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
+
+        if(service_id == 'scorpio'){
+            const url = 'http://scorpio:9090/ngsi-ld/v1/entities/'
+            if(count == j || count == 1){
+                count++
+                console.log("A")
+                orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
                     if(err)
                     {
                         res.send(err)
@@ -137,37 +173,104 @@ router.post('/service_discovery/:service_id', (req, res)=>{
                     else{
                         res.send(body)
                     }   
-            })
-
+                })
             }
-            else if(service_id == 'scorpio'){
-            
-            const url = 'http://scorpio:9090/ngsi-ld/v1/entities/'
-            //console.log(ngsi)
-            orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
-                if(err)
-                {
-                    res.send(err)
-                }
-                else{
-                    res.send(body)
-                }   
-            })
-
-            }
-            else if(service_id == 'rabbit'){
-
-    
-                rabbit_producer.rabbit_direct_producer(ngsi, (err,body)=>{
+            else if(count == j+1 || count == 2){
+                count++
+                console.log("B")
+                orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
                     if(err)
                     {
                         res.send(err)
                     }
                     else{
-                            res.send(body)
-                        } 
+                        res.send(body)
+                    }   
                 })
-             
+            }
+            else if(count == j+2 || count == 3){
+                count++
+                console.log("C")
+                orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
+                    if(err)
+                    {
+                        res.send(err)
+                    }
+                    else{
+                        res.send(body)
+                    }   
+                })
+            }
+            else if(count == j+3 || count == 4){
+                count++
+                j = count
+                console.log("D")
+                orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
+                    if(err)
+                    {
+                        res.send(err)
+                    }
+                    else{
+                        res.send(body)
+                    }   
+                })
+            }
+
+            }
+            else if(service_id == 'rabbit'){
+                    if(count == j || count == 1){
+                        count++
+                        console.log("A")
+                        rabbit_producer.rabbit_direct_producer_1(channel1, ngsi, (err,body)=>{
+                            if(err)
+                            {
+                                res.send(err)
+                            }
+                            else{
+                                    res.send(body)
+                                } 
+                        })
+                    }
+                    else if(count == j+1 || count == 2){
+                        count++
+                        console.log("B")
+                        rabbit_producer.rabbit_direct_producer_2(channel2, ngsi, (err,body)=>{
+                            if(err)
+                            {
+                                res.send(err)
+                            }
+                            else{
+                                    res.send(body)
+                                } 
+                        })
+                    }
+                    else if(count == j+2 || count == 3){
+                        count++
+                        console.log("C")
+                        rabbit_producer.rabbit_direct_producer_3(channel3, ngsi, (err,body)=>{
+                            if(err)
+                            {
+                                res.send(err)
+                            }
+                            else{
+                                    res.send(body)
+                                } 
+                        })
+                    }
+                    else if(count == j+3 || count == 4){
+                        count++
+                        j = count
+                        console.log("D")
+                        rabbit_producer.rabbit_direct_producer_4(channel4, ngsi, (err,body)=>{
+                            if(err)
+                            {
+                                res.send(err)
+                            }
+                            else{
+                                    res.send(body)
+                                } 
+                        })
+                    }
             }
             else if (service_id == 'stellio'){
                 const url = 'http://entity-service:8082/ngsi-ld/v1/entities'
@@ -182,44 +285,12 @@ router.post('/service_discovery/:service_id', (req, res)=>{
                     }   
                 })
             }
-            else if(service_id == 'pushpin'){
-                console.log(ngsi)
-                const pub = new Publisher({
-                    'control_uri': 'http://pushpin:5561/',
-                });
-                
-                
-                            pub.publishHttpStream('test', JSON.stringify(ngsi) )
-                                .then(async () => {
-                                    await write_in_csv_T2()
-                                    res.send('Publish successful!');
-                                })
-                                .catch(async () => {
-                                    await write_in_csv_error()
-                                    res.send("Error-msg")
-                                });
-            }
-            else if(service_id == 'faye'){
-
-                const client = new faye.Client('http://faye:8000/faye');
-                client.connect();
-
-                const publication = client.publish('/post', ngsi);
-
-                publication.then(async function() {
-                        await write_in_csv_T2()
-                        res.send("Pub success")
-                    },async function(error) {
-                        await write_in_csv_error()
-                    res.send('There was a problem: ' + error.message);
-                })
-            }
-            else if(service_id == 'kafka'){
+            else if(service_id == 'kafka1'){
 
                 const run = async()=>{
                     await kafka_producer.send({
                         topic: 'send',
-                        ack:1,
+                        ack:-1,
                         messages: [
                                     { value : JSON.stringify(ngsi) }
                                 ]
@@ -237,22 +308,78 @@ router.post('/service_discovery/:service_id', (req, res)=>{
                 }catch (error){
                     console.error(error)
                 }                
-
             }
-            else if(service_id == 'kafka1'){
+            else if(service_id == 'kafka2'){
+
                 const run = async()=>{
-                    await kafka_producer.connect()
                     await kafka_producer.send({
                         topic: 'send',
+                        ack:-1,
                         messages: [
-                                    { key: ngsi.id , value : JSON.stringify(ngsi) , partition: 0 }
+                                    { value : JSON.stringify(ngsi) }
                                 ]
                             })
-                    await kafka_producer.disconnect()
-                    res.status(200).send("OK")
                 }
 
-                run()
+                try{
+                
+                   run().then(async ()=>{
+                     await write_in_csv_T2()
+                     res.status(200).send("Entity posted succesfully")
+                   }).catch(e => write_in_csv_error())
+
+
+                }catch (error){
+                    console.error(error)
+                }                
+            }
+            else if(service_id == 'kafka3'){
+
+                const run = async()=>{
+                    await kafka_producer.send({
+                        topic: 'send',
+                        ack:-1,
+                        messages: [
+                                    { value : JSON.stringify(ngsi) }
+                                ]
+                            })
+                }
+
+                try{
+                
+                   run().then(async ()=>{
+                     await write_in_csv_T2()
+                     res.status(200).send("Entity posted succesfully")
+                   }).catch(e => write_in_csv_error())
+
+
+                }catch (error){
+                    console.error(error)
+                }                
+            }
+            else if(service_id == 'kafka4'){
+
+                const run = async()=>{
+                    await kafka_producer.send({
+                        topic: 'send',
+                        ack:-1,
+                        messages: [
+                                    { value : JSON.stringify(ngsi) }
+                                ]
+                            })
+                }
+
+                try{
+                
+                   run().then(async ()=>{
+                     await write_in_csv_T2()
+                     res.status(200).send("Entity posted succesfully")
+                   }).catch(e => write_in_csv_error())
+
+
+                }catch (error){
+                    console.error(error)
+                }                
             }
             else{
                 res.send('This Service doesnt exist')
@@ -626,49 +753,130 @@ router.post('/service_discovery/:service_id/:entityId/attrs', (req, res)=>{
     const content_type = req.get('Content-type');
     const Link = req.get('Link')
 
-    if(service_id == 'orion')
-    {
-        const url = 'http://orion:1026/ngsi-ld/v1/entities/' + entity_id + '/attrs/'
-        
-        orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
-            if(err)
-            {
-                await write_in_csv_error()
-                res.send(err)
-            }
-            else{
-                await write_in_csv_T2()
-                res.send(body)
-            }   
-       })
-    }
-    else if(service_id == 'scorpio'){
+    if(service_id == 'scorpio'){
         const url = 'http://scorpio:9090/ngsi-ld/v1/entities/' + entity_id + '/attrs/'
-        orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
-            if(err)
-            {
-                await write_in_csv_error()
-                res.send(err)
+        
+            if(count == j || count == 1){
+                count++
+                console.log("A")
+                orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
+                    if(err)
+                    {
+                        await write_in_csv_error()
+                        res.send(err)
+                    }
+                    else{
+                        await write_in_csv_T2()
+                        res.send(body)
+                    }   
+            })
             }
-            else{
-                await write_in_csv_T2()
-                res.send(body)
-            }   
-       })
+            else if(count == j+1 || count == 2){
+                count++
+                console.log("B")
+                orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
+                    if(err)
+                    {
+                        await write_in_csv_error()
+                        res.send(err)
+                    }
+                    else{
+                        await write_in_csv_T2()
+                        res.send(body)
+                    }   
+            })
+            }
+            else if(count == j+2 || count == 3){
+                count++
+                console.log("C")
+                orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
+                    if(err)
+                    {
+                        res.send(err)
+                    }
+                    else{
+                        res.send(body)
+                    }   
+                })
+            }
+            else if(count == j+3 || count == 4){
+                count++
+                j = count
+                console.log("D")
+                orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
+                    if(err)
+                    {
+                        await write_in_csv_error()
+                        res.send(err)
+                    }
+                    else{
+                        await write_in_csv_T2()
+                        res.send(body)
+                    }   
+            })
+            }
     }
     else if(service_id == 'stellio'){
         const url = 'http://entity-service:8082/ngsi-ld/v1/entities/' + entity_id + '/attrs/'
-        orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
-            if(err)
-            {
-                await write_in_csv_error()
-                res.send(err)
-            }
-            else{
-                await write_in_csv_T2()
-                res.send(body)
-            }   
-       })
+        if(count == j || count == 1){
+            count++
+            console.log("A")
+            orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
+                if(err)
+                {
+                    await write_in_csv_error()
+                    res.send(err)
+                }
+                else{
+                    await write_in_csv_T2()
+                    res.send(body)
+                }   
+        })
+        }
+        else if(count == j+1 || count == 2){
+            count++
+            console.log("B")
+            orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
+                if(err)
+                {
+                    await write_in_csv_error()
+                    res.send(err)
+                }
+                else{
+                    await write_in_csv_T2()
+                    res.send(body)
+                }   
+        })
+        }
+        else if(count == j+2 || count == 3){
+            count++
+            console.log("C")
+            orion_scorpio.post_ngsi(ngsi,content_type,url , (err,body)=>{
+                if(err)
+                {
+                    res.send(err)
+                }
+                else{
+                    res.send(body)
+                }   
+            })
+        }
+        else if(count == j+3 || count == 4){
+            count++
+            j = count
+            console.log("D")
+            orion_scorpio.post_attrs_ngsi(ngsi,url, content_type, Link , async (err,body)=>{
+                if(err)
+                {
+                    await write_in_csv_error()
+                    res.send(err)
+                }
+                else{
+                    await write_in_csv_T2()
+                    res.send(body)
+                }   
+        })
+        }
     }
     else if(service_id == 'rabbit'){
         

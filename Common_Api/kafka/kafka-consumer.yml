@@ -7,10 +7,9 @@ services:
       container_name: kafka-sub
       hostname: kafka-sub
       restart: always
+      network_mode: host
       build: .
       command: nodemon /usr/src/app/kafka-sub.js
-      networks:
-        - kafka-sub-net
       ports:
         - '3040:3040'
       volumes:
