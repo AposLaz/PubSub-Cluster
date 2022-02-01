@@ -66,7 +66,7 @@ const {Kafka} = require('kafkajs');
 
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['kafka:9094'],
+    brokers: ['35.214.106.147:19094','35.214.106.147:29094','35.214.106.147:39094','35.214.106.147:49094'],
 })
 
 const admin = kafka.admin()

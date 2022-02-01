@@ -1,0 +1,122 @@
+# WARNING: Do not deploy this tutorial configuration directly to a production environment
+#
+# The tutorial docker-compose files have not been written for production deployment and will not 
+# scale. A proper architecture has been sacrificed to keep the narrative focused on the learning 
+# goals, they are just used to deploy everything onto a single Docker machine. All FIWARE components 
+# are running at full debug and extra ports have been exposed to allow for direct calls to services. 
+# They also contain various obvious security flaws - passwords in plain text, no load balancing,
+# no use of HTTPS and so on. 
+# 
+# This is all to avoid the need of multiple machines, generating certificates, encrypting secrets
+# and so on, purely so that a single docker-compose file can be read as an example to build on, 
+# not use directly. 
+# 
+# When deploying to a production environment, please refer to the Helm Repository
+# for FIWARE Components in order to scale up to a proper architecture:
+# 
+# see: https://github.com/FIWARE/helm-charts/
+#
+
+version: "3.5"
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    hostname: zookeeper
+    container_name: zookeeper
+    networks:
+      - default
+    ports:
+      - "2181"
+  kafka:
+    build: .
+    # container_name: kafka
+    #hostname: kafka
+    ports:
+      - "9092"
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      #KAFKA_CREATE_TOPICS: "ENTITY_APPEND:4:2"
+      # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      # KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+      
+  scorpio:
+    image: scorpiobroker/scorpio:scorpio-aaio_1.1.0
+    hostname: scorpio
+    container_name: fiware-scorpio
+    networks:
+      - default
+      - scorpio-proxy-net
+      - new-scorpio-net-end
+    ports:
+      - "9090:9090"
+    depends_on:
+      - kafka
+      - postgres
+    healthcheck:
+      test: curl --fail -s http://scorpio:9090/scorpio/v1/info/ || exit 1
+
+  postgres:
+    image: mdillon/postgis
+    hostname: postgres
+    container_name: db-postgres
+    networks:
+      - default
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_USER: ngb
+      POSTGRES_PASSWORD: ngb
+      POSTGRES_DB: ngb
+  
+  prometheus:
+     image: prom/prometheus:latest
+     container_name: prometheus
+     volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+     command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+      - '--web.listen-address=:8070'
+     expose:
+      - 8070
+     ports:
+      - 8070:8070
+
+  grafana:
+     image: grafana/grafana
+     container_name: grafana
+     network_mode: host
+     restart: always
+     ports:
+      - 9000:3000
+     volumes:
+      - grafana-data:/var/lib/grafana
+
+networks:
+    default:
+        driver: bridge 
+    scorpio-proxy-net:
+        name: scorpio_network
+    new-scorpio-net-end:
+        name: scorpio_network_end
+
+volumes:
+  grafana-data:
+  prometheus_data: {}

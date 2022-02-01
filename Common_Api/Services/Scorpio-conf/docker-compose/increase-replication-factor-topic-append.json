@@ -1,0 +1,8 @@
+{"version":1,
+    "partitions":[
+       {"topic":"ENTITY_APPEND","partition":0,"replicas":[1001,1004]},
+       {"topic":"ENTITY_APPEND","partition":1,"replicas":[1001,1003]},
+       {"topic":"ENTITY_APPEND","partition":2,"replicas":[1003,1001]},
+       {"topic":"ENTITY_APPEND","partition":3,"replicas":[1004,1002]}
+]}
+  

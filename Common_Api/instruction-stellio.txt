@@ -118,7 +118,7 @@ curl --location --request POST 'localhost:3001/service_discovery/stellio' \
 
 ---------- TRY GET ENTITY
 
-curl --location --request GET 'localhost:3001/service_discovery/stellio/urn:ngsi-ld:BeeHive:01' \
+curl --location --request GET '35.214.5.239:3001/service_discovery/stellio/urn:ngsi-ld:BeeHive:01' \
 --header 'Link: <https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/master/apic/jsonld-contexts/apic-compound.jsonld>; rel=http://www.w3.org/ns/json-ld#context; type=application/ld+json'
 
 

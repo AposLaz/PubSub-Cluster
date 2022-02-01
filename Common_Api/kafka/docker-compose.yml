@@ -10,18 +10,48 @@ services:
       - default
     ports:
       - "2181"
-  kafka:
+
+  kafka-1:
     build: kafka-Dockerfile
     # container_name: kafka
     #hostname: kafka
     ports:
-      - "9092"
+      - "9094:9092"
+      - "19094"
+    expose:
+      - "19094"
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
-      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9094,OUTSIDE://_{HOSTNAME_COMMAND}:19094
+      KAFKA_LISTENERS: INSIDE://:9094,OUTSIDE://:19094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      #KAFKA_CREATE_TOPICS: "ENTITY_APPEND:4:2"
+      # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      # KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+  
+  kafka-2:
+    build: kafka-Dockerfile
+    # container_name: kafka
+    #hostname: kafka
+    ports:
+      - "9095:9092"
+      - "29094"
+    expose:
+      - "29094"
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9095,OUTSIDE://_{HOSTNAME_COMMAND}:29094
+      KAFKA_LISTENERS: INSIDE://:9095,OUTSIDE://:29094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       #KAFKA_CREATE_TOPICS: "ENTITY_APPEND:4:2"
       # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
@@ -33,5 +63,54 @@ services:
     networks:
       - default
 
-
-
+  kafka-3:
+    build: kafka-Dockerfile
+    # container_name: kafka
+    #hostname: kafka
+    ports:
+      - "9096:9092"
+      - "39094"
+    expose:
+      - "39094"
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9096,OUTSIDE://_{HOSTNAME_COMMAND}:39094
+      KAFKA_LISTENERS: INSIDE://:9096,OUTSIDE://:39094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      #KAFKA_CREATE_TOPICS: "ENTITY_APPEND:4:2"
+      # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      # KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+  
+  kafka-4:
+    build: kafka-Dockerfile
+    # container_name: kafka
+    #hostname: kafka
+    ports:
+      - "9097:9092"
+      - "49094"
+    expose:
+      - "49094"
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9097,OUTSIDE://_{HOSTNAME_COMMAND}:49094
+      KAFKA_LISTENERS: INSIDE://:9095,OUTSIDE://:49094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      #KAFKA_CREATE_TOPICS: "ENTITY_APPEND:4:2"
+      # KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      # KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
